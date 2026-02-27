@@ -30,29 +30,21 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Generate slug pages into _site/
-        run: |
-          # Script tạo _site/slope/, _site/retro-bowl/... + sitemap + robots + cdn-links
-          OUT_DIR=_site node generate-games.js
+      - name: Generate game pages into _site/g/
+        run: OUT_DIR=_site node generate-games.js
 
       - name: Copy static files into _site/
         run: |
-          # Copy các file tĩnh cần thiết vào _site/
           cp index.html  _site/
-          cp play.html   _site/
+          cp game.html   _site/
           cp games.json  _site/
 
-          # Copy data/ nếu có (thumbs)
-          if [ -d data ]; then
-            cp -r data _site/
-          fi
-
-          # Copy favicon nếu có
-          [ -f favicon.ico ] && cp favicon.ico _site/
-          [ -f favicon.png ] && cp favicon.png _site/
+          [ -d data ]        && cp -r data        _site/
+          [ -f favicon.ico ] && cp favicon.ico    _site/
+          [ -f favicon.png ] && cp favicon.png    _site/
 
           echo "✅ _site contents:"
-          find _site -maxdepth 2 | sort
+          find _site -maxdepth 3 | sort
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
