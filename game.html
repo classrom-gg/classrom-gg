@@ -157,27 +157,41 @@
     border: 1px solid var(--border);
     border-radius: 10px;
     overflow: hidden;
-    box-shadow: 0 0 60px rgba(0,0,0,0.5);
+    box-shadow: 0 4px 32px rgba(0,0,0,0.4);
   }
   .game-frame-inner {
     position: relative;
-    padding-bottom: 56.25%; /* 16:9 */
+    padding-bottom: 56.25%;
     height: 0;
     overflow: hidden;
+    background: #000;
   }
-  .game-frame-inner iframe,
+  .game-frame-inner iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: block;
+    opacity: 1 !important;
+    filter: none !important;
+  }
   .game-frame-inner canvas {
     position: absolute;
     inset: 0;
     width: 100%;
     height: 100%;
     border: none;
+    opacity: 1 !important;
+    filter: none !important;
   }
   .game-frame-inner .ruffle-container {
     position: absolute;
     inset: 0;
     width: 100% !important;
     height: 100% !important;
+    opacity: 1 !important;
+    filter: none !important;
   }
 
   /* Fullscreen button */
@@ -458,6 +472,13 @@ function renderGame(game, related) {
   const slug = game.slug || toSlug(game.name);
   const isFlash = game.type === 'swf';
 
+  // URL: ưu tiên game.url nếu có, fallback về data/games/<slug>/index.html hoặc .swf
+  const gameUrl = game.url
+    ? game.url
+    : isFlash
+      ? `data/games/${slug}/${slug}.swf`
+      : `data/games/${slug}/index.html`;
+
   // Page meta
   document.title = `${game.name} — Classrom.GG`;
   document.querySelector('meta[name="description"]').setAttribute('content',
@@ -467,12 +488,13 @@ function renderGame(game, related) {
   // Related cards html
   const relatedHtml = related.slice(0, 6).map(g => {
     const gs = g.slug || toSlug(g.name);
-    const emoji = getEmoji(g.name);
-    const thumb = g.thumb
-      ? `<img src="${g.thumb}" alt="${g.name}" onerror="this.style.display='none'">`
-      : emoji;
+    const thumbSrc = g.thumb || `data/thumbs/${gs}.png`;
     return `<a class="related-card" href="game.html?slug=${gs}">
-      <div class="related-thumb">${thumb}</div>
+      <div class="related-thumb">
+        <img src="${thumbSrc}" alt="${g.name}"
+          onerror="this.style.display='none';this.nextSibling.style.display='flex'">
+        <span style="display:none;align-items:center;justify-content:center;font-size:18px;width:100%;height:100%">${getEmoji(g.name)}</span>
+      </div>
       <div>
         <div class="related-name">${g.name}</div>
         <div class="related-type">${g.type === 'swf' ? '🎮 Flash' : '🌐 HTML5'}</div>
@@ -480,13 +502,12 @@ function renderGame(game, related) {
     </a>`;
   }).join('');
 
-  // Game iframe/flash embed
+  // Game embed
   let gameEmbed = '';
   if (isFlash) {
-    // Ruffle will handle .swf automatically
     gameEmbed = `<div id="ruffle-container" style="position:absolute;inset:0;width:100%;height:100%"></div>`;
   } else {
-    gameEmbed = `<iframe id="game-iframe" src="${game.url}" allowfullscreen
+    gameEmbed = `<iframe id="game-iframe" src="${gameUrl}" allowfullscreen
       allow="fullscreen; autoplay; gamepad"
       sandbox="allow-scripts allow-same-origin allow-forms allow-pointer-lock allow-popups"
       loading="lazy"></iframe>`;
@@ -550,14 +571,14 @@ function renderGame(game, related) {
     </div>`;
 
   // Init Ruffle for Flash games
-  if (isFlash && game.url) {
+  if (isFlash) {
     try {
       const ruffle = window.RufflePlayer.newest();
       const player = ruffle.createPlayer();
       player.style.width = '100%';
       player.style.height = '100%';
       document.getElementById('ruffle-container').appendChild(player);
-      player.load(game.url);
+      player.load(gameUrl);
     } catch(e) {
       document.getElementById('ruffle-container').innerHTML =
         `<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#fb7185;font-family:'Press Start 2P';font-size:10px;text-align:center;padding:20px">
@@ -617,4 +638,4 @@ function showNotFound() {
 init();
 </script>
 </body>
-</html>s
+</html>
