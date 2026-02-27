@@ -30,46 +30,34 @@ jobs:
         with:
           node-version: '20'
 
-      # Chạy script: đọc games.json → tạo slug folders + sitemap + robots + cdn-links
-      - name: Generate slug pages
-        run: node generate-games.js
-
-      # Copy tất cả file cần thiết vào _site/
-      - name: Prepare _site folder
+      - name: Generate slug pages into _site/
         run: |
-          mkdir -p _site
+          # Script tạo _site/slope/, _site/retro-bowl/... + sitemap + robots + cdn-links
+          OUT_DIR=_site node generate-games.js
 
-          # Copy file tĩnh chính
-          cp index.html   _site/
-          cp play.html    _site/
-          cp games.json   _site/
-          cp sitemap.xml  _site/
-          cp robots.txt   _site/
-          cp cdn-links.json _site/ 2>/dev/null || true
+      - name: Copy static files into _site/
+        run: |
+          # Copy các file tĩnh cần thiết vào _site/
+          cp index.html  _site/
+          cp play.html   _site/
+          cp games.json  _site/
 
-          # Copy data/ (thumbs)
-          [ -d data ] && cp -r data _site/
+          # Copy data/ nếu có (thumbs)
+          if [ -d data ]; then
+            cp -r data _site/
+          fi
 
-          # Copy tất cả slug folders (slope/, retro-bowl/, ...)
-          # Bỏ qua các folder/file không cần deploy
-          SKIP="_site|.git|.github|node_modules|generate-games.js|package*.json"
-          for item in */; do
-            folder="${item%/}"
-            if ! echo "$folder" | grep -qE "^(_site|\.git|\.github|node_modules)$"; then
-              cp -r "$folder" _site/
-            fi
-          done
+          # Copy favicon nếu có
+          [ -f favicon.ico ] && cp favicon.ico _site/
+          [ -f favicon.png ] && cp favicon.png _site/
 
-          echo "=== _site contents ==="
-          ls -la _site/
-          echo ""
-          echo "=== Slug folders ==="
-          ls _site/ | grep -v '\.' || echo "(none)"
+          echo "✅ _site contents:"
+          find _site -maxdepth 2 | sort
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
 
-      - name: Upload artifact
+      - name: Upload _site/ artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: '_site'
