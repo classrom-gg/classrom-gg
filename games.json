@@ -1,0 +1,33 @@
+{
+  "meta": {
+    "generatedAt": "2025-01-01T00:00:00.000Z",
+    "repo": "classrom-gg/classrom-gg",
+    "branch": "main",
+    "cdnBase": "https://cdn.jsdelivr.net/gh/classrom-gg/classrom-gg@main",
+    "totalGames": 4,
+    "htmlCount": 2,
+    "swfCount": 2
+  },
+  "games": [
+    {
+      "name": "Angry Birds",
+      "type": "html",
+      "path": "angry-birds/index.html"
+    },
+    {
+      "name": "2048",
+      "type": "html",
+      "path": "2048/index.html"
+    },
+    {
+      "name": "Pacman",
+      "type": "swf",
+      "path": "pacman/pacman.swf"
+    },
+    {
+      "name": "Super Mario Flash",
+      "type": "swf",
+      "path": "super-mario-flash/mario.swf"
+    }
+  ]
+}

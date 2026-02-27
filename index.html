@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Classrom.GG — Play Free Games</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --bg2: #0f0f1a;
+    --card: #13131f;
+    --border: #1e1e32;
+    --accent: #00ffaa;
+    --accent2: #ff3e6c;
+    --accent3: #7c3aed;
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --glow: 0 0 20px rgba(0,255,170,0.25);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 16px;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* scanline overlay */
+  body::before {
+    content:'';
+    position:fixed;
+    inset:0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.08) 2px,
+      rgba(0,0,0,0.08) 4px
+    );
+    pointer-events:none;
+    z-index:9999;
+  }
+
+  /* ── HEADER ── */
+  header {
+    padding: 20px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+    background: rgba(10,10,15,0.95);
+    backdrop-filter: blur(10px);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .logo {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 14px;
+    color: var(--accent);
+    text-shadow: 0 0 20px rgba(0,255,170,0.6);
+    text-decoration: none;
+    letter-spacing: 1px;
+  }
+  .logo span { color: var(--accent2); }
+  nav { display:flex; gap:24px; align-items:center; }
+  nav a {
+    color: var(--muted);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  nav a:hover { color: var(--accent); }
+
+  /* ── HERO ── */
+  .hero {
+    text-align: center;
+    padding: 80px 32px 60px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content:'';
+    position:absolute;
+    inset:0;
+    background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(124,58,237,0.15) 0%, transparent 70%);
+    pointer-events:none;
+  }
+  .hero h1 {
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(18px, 3vw, 32px);
+    line-height: 1.6;
+    color: #fff;
+    text-shadow: 0 0 40px rgba(124,58,237,0.8);
+    margin-bottom: 16px;
+  }
+  .hero h1 em {
+    font-style: normal;
+    color: var(--accent);
+    text-shadow: 0 0 30px rgba(0,255,170,0.8);
+  }
+  .hero p {
+    color: var(--muted);
+    font-size: 18px;
+    max-width: 500px;
+    margin: 0 auto 40px;
+    font-weight: 600;
+  }
+
+  /* ── SEARCH ── */
+  .search-wrap {
+    max-width: 500px;
+    margin: 0 auto;
+    position: relative;
+  }
+  .search-wrap input {
+    width: 100%;
+    padding: 14px 20px 14px 48px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .search-wrap input:focus {
+    border-color: var(--accent);
+    box-shadow: var(--glow);
+  }
+  .search-wrap input::placeholder { color: var(--muted); }
+  .search-icon {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--muted);
+    font-size: 18px;
+  }
+
+  /* ── FILTERS ── */
+  .filters {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+    padding: 0 32px 40px;
+  }
+  .filter-btn {
+    padding: 8px 20px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--muted);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .filter-btn:hover { border-color: var(--accent3); color: #fff; }
+  .filter-btn.active {
+    background: var(--accent3);
+    border-color: var(--accent3);
+    color: #fff;
+    box-shadow: 0 0 16px rgba(124,58,237,0.4);
+  }
+  .filter-btn.flash.active {
+    background: var(--accent2);
+    border-color: var(--accent2);
+    box-shadow: 0 0 16px rgba(255,62,108,0.4);
+  }
+  .filter-btn.html5.active {
+    background: #0ea5e9;
+    border-color: #0ea5e9;
+    box-shadow: 0 0 16px rgba(14,165,233,0.4);
+  }
+
+  /* ── STATS BAR ── */
+  .stats {
+    display: flex;
+    gap: 32px;
+    justify-content: center;
+    padding: 0 32px 40px;
+    flex-wrap: wrap;
+  }
+  .stat {
+    text-align: center;
+  }
+  .stat-num {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 20px;
+    color: var(--accent);
+    display: block;
+  }
+  .stat-label {
+    font-size: 12px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 700;
+  }
+
+  /* ── GRID ── */
+  .section-title {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 0 32px 20px;
+  }
+  .section-title span { color: var(--accent); }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+    padding: 0 32px 60px;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  /* ── CARD ── */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    transition: transform 0.18s, border-color 0.18s, box-shadow 0.18s;
+    animation: fadeIn 0.4s ease both;
+  }
+  .card:hover {
+    transform: translateY(-4px);
+    border-color: var(--accent3);
+    box-shadow: 0 8px 32px rgba(124,58,237,0.25);
+  }
+  @keyframes fadeIn {
+    from { opacity:0; transform: translateY(12px); }
+    to   { opacity:1; transform: translateY(0); }
+  }
+
+  .card-thumb {
+    aspect-ratio: 16/9;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 40px;
+    position: relative;
+    overflow: hidden;
+  }
+  .card-thumb::after {
+    content:'▶';
+    position:absolute;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:28px;
+    color:rgba(255,255,255,0.0);
+    background: rgba(0,0,0,0);
+    transition: all 0.2s;
+  }
+  .card:hover .card-thumb::after {
+    color: rgba(255,255,255,0.9);
+    background: rgba(0,0,0,0.5);
+  }
+
+  .card-body { padding: 12px 14px; }
+  .card-name {
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .card-meta {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+  }
+  .badge {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border-radius: 4px;
+  }
+  .badge-html5 { background: rgba(14,165,233,0.15); color: #38bdf8; border: 1px solid rgba(14,165,233,0.3); }
+  .badge-flash { background: rgba(255,62,108,0.15); color: #fb7185; border: 1px solid rgba(255,62,108,0.3); }
+
+  /* ── EMPTY STATE ── */
+  .empty {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 80px 0;
+    color: var(--muted);
+  }
+  .empty-icon {
+    font-size: 64px;
+    display: block;
+    margin-bottom: 16px;
+    opacity: 0.4;
+  }
+  .empty p {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 11px;
+    line-height: 2;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 32px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 600;
+  }
+  footer a { color: var(--accent); text-decoration: none; }
+
+  /* ── LOADING ── */
+  .loading {
+    text-align: center;
+    padding: 80px 0;
+    color: var(--muted);
+    font-family: 'Press Start 2P', monospace;
+    font-size: 11px;
+  }
+  .loading::after {
+    content: '...';
+    animation: dots 1.2s infinite;
+  }
+  @keyframes dots {
+    0%,20%  { content:'.'   }
+    40%     { content:'..'  }
+    60%,100%{ content:'...' }
+  }
+
+  @media (max-width: 600px) {
+    .grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); padding: 0 16px 40px; }
+    .hero { padding: 50px 16px 40px; }
+    .filters, .stats { padding-left: 16px; padding-right: 16px; }
+    header { padding: 16px; }
+    nav a { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <a class="logo" href="index.html">CLASSROM<span>.GG</span></a>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="#flash">Flash</a>
+    <a href="#html5">HTML5</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <h1>PLAY <em>FREE</em><br>GAMES ONLINE</h1>
+  <p>HTML5 & Flash games — no download, works everywhere</p>
+  <div class="search-wrap">
+    <span class="search-icon">🔍</span>
+    <input type="text" id="search" placeholder="Search games..." autocomplete="off">
+  </div>
+</section>
+
+<div class="stats" id="stats">
+  <div class="stat"><span class="stat-num" id="total-count">—</span><span class="stat-label">Total Games</span></div>
+  <div class="stat"><span class="stat-num" id="html5-count">—</span><span class="stat-label">HTML5</span></div>
+  <div class="stat"><span class="stat-num" id="flash-count">—</span><span class="stat-label">Flash</span></div>
+</div>
+
+<div class="filters">
+  <button class="filter-btn active" data-filter="all">⚡ All</button>
+  <button class="filter-btn html5" data-filter="html">🌐 HTML5</button>
+  <button class="filter-btn flash" data-filter="swf">🎮 Flash</button>
+</div>
+
+<p class="section-title" id="section-label">ALL GAMES — <span id="game-count">0</span> games</p>
+
+<main class="grid" id="grid">
+  <div class="loading">Loading games</div>
+</main>
+
+<footer>
+  <p>© 2025 Classrom.GG &nbsp;·&nbsp; Powered by <a href="https://ruffle.rs" target="_blank">Ruffle</a> Flash Emulator &nbsp;·&nbsp; <a href="https://github.com/classrom-gg/classrom-gg" target="_blank">GitHub</a></p>
+</footer>
+
+<script>
+const EMOJIS = ['🎮','🕹️','👾','🎲','⚔️','🚀','🏎️','🎯','🧩','🌟','🔥','💎','🐉','🦊','🤖'];
+
+let allGames = [];
+let currentFilter = 'all';
+
+// Random emoji per game (seeded by name)
+function getEmoji(name) {
+  let hash = 0;
+  for (let c of name) hash = (hash * 31 + c.charCodeAt(0)) & 0xffff;
+  return EMOJIS[hash % EMOJIS.length];
+}
+
+function renderCards(games) {
+  const grid = document.getElementById('grid');
+  document.getElementById('game-count').textContent = games.length;
+
+  if (!games.length) {
+    grid.innerHTML = `<div class="empty"><span class="empty-icon">👾</span><p>NO GAMES FOUND<br>TRY A DIFFERENT SEARCH</p></div>`;
+    return;
+  }
+
+  grid.innerHTML = games.map((g, i) => `
+    <a class="card" href="play.html?path=${encodeURIComponent(g.path)}&type=${g.type}&name=${encodeURIComponent(g.name)}"
+       style="animation-delay:${Math.min(i*0.04, 0.6)}s">
+      <div class="card-thumb">${getEmoji(g.name)}</div>
+      <div class="card-body">
+        <div class="card-name">${g.name}</div>
+        <div class="card-meta">
+          <span class="badge badge-${g.type === 'swf' ? 'flash' : 'html5'}">${g.type === 'swf' ? 'FLASH' : 'HTML5'}</span>
+        </div>
+      </div>
+    </a>
+  `).join('');
+}
+
+function applyFilters() {
+  const q = document.getElementById('search').value.toLowerCase();
+  const filtered = allGames.filter(g => {
+    const typeMatch = currentFilter === 'all' || g.type === currentFilter;
+    const nameMatch = g.name.toLowerCase().includes(q);
+    return typeMatch && nameMatch;
+  });
+  renderCards(filtered);
+}
+
+async function loadGames() {
+  try {
+    const res = await fetch('games.json');
+    const data = await res.json();
+    allGames = data.games || [];
+
+    // Update stats
+    const html5 = allGames.filter(g => g.type === 'html').length;
+    const flash = allGames.filter(g => g.type === 'swf').length;
+    document.getElementById('total-count').textContent = allGames.length;
+    document.getElementById('html5-count').textContent = html5;
+    document.getElementById('flash-count').textContent = flash;
+
+    applyFilters();
+  } catch(e) {
+    document.getElementById('grid').innerHTML = `<div class="empty"><span class="empty-icon">⚠️</span><p>COULD NOT LOAD<br>GAMES.JSON</p></div>`;
+  }
+}
+
+// Events
+document.getElementById('search').addEventListener('input', applyFilters);
+
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentFilter = btn.dataset.filter;
+    const label = currentFilter === 'all' ? 'ALL GAMES' : currentFilter === 'html' ? 'HTML5 GAMES' : 'FLASH GAMES';
+    document.getElementById('section-label').querySelector(':first-child') || null;
+    document.getElementById('section-label').innerHTML = `${label} — <span id="game-count">0</span> games`;
+    applyFilters();
+  });
+});
+
+loadGames();
+</script>
+</body>
+</html>

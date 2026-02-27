@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Play — Classrom.GG</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --card: #13131f;
+    --border: #1e1e32;
+    --accent: #00ffaa;
+    --accent2: #ff3e6c;
+    --accent3: #7c3aed;
+    --text: #e2e8f0;
+    --muted: #64748b;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Rajdhani', sans-serif;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  body::before {
+    content:'';
+    position:fixed;
+    inset:0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.06) 2px, rgba(0,0,0,0.06) 4px);
+    pointer-events:none;
+    z-index:9999;
+  }
+
+  /* ── TOP BAR ── */
+  .topbar {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 12px 20px;
+    background: rgba(10,10,15,0.98);
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+    z-index: 10;
+  }
+  .back-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--muted);
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transition: color 0.2s;
+    white-space: nowrap;
+  }
+  .back-btn:hover { color: var(--accent); }
+  .back-btn span { font-size: 16px; }
+  .game-title {
+    flex: 1;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 10px;
+    color: #fff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .badge {
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    flex-shrink: 0;
+  }
+  .badge-html5 { background: rgba(14,165,233,0.2); color: #38bdf8; border: 1px solid rgba(14,165,233,0.3); }
+  .badge-flash { background: rgba(255,62,108,0.2); color: #fb7185; border: 1px solid rgba(255,62,108,0.3); }
+
+  .btn-fullscreen {
+    padding: 6px 14px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--muted);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transition: all 0.2s;
+    flex-shrink: 0;
+  }
+  .btn-fullscreen:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ── GAME AREA ── */
+  .game-wrap {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #000;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* HTML5 iframe */
+  #html5-frame {
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: none;
+  }
+
+  /* SWF via Ruffle */
+  #ruffle-wrap {
+    width: 100%;
+    height: 100%;
+    display: none;
+    align-items: center;
+    justify-content: center;
+  }
+  #ruffle-wrap ruffle-player {
+    width: 100%;
+    height: 100%;
+    max-width: 100%;
+    max-height: 100%;
+  }
+
+  /* Loading overlay */
+  .overlay {
+    position: absolute;
+    inset: 0;
+    background: #000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+    z-index: 5;
+  }
+  .overlay-icon { font-size: 64px; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.1)} }
+  .overlay-text {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    text-align: center;
+    line-height: 2;
+    text-shadow: 0 0 20px rgba(0,255,170,0.5);
+  }
+  .overlay-sub {
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .progress-bar {
+    width: 200px;
+    height: 4px;
+    background: #1e1e32;
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 2px;
+    animation: progress 2s ease-in-out infinite;
+  }
+  @keyframes progress {
+    0%   { width: 0%; margin-left: 0 }
+    50%  { width: 60%; margin-left: 20% }
+    100% { width: 0%; margin-left: 100% }
+  }
+  .overlay.hidden { display: none; }
+
+  /* Error */
+  .error-screen {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    padding: 40px;
+    text-align: center;
+  }
+  .error-screen.show { display: flex; }
+  .error-screen h2 {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 14px;
+    color: var(--accent2);
+  }
+  .error-screen p { color: var(--muted); max-width: 400px; line-height: 1.7; }
+  .error-screen a {
+    padding: 12px 24px;
+    background: var(--accent3);
+    color: #fff;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    font-size: 14px;
+    margin-top: 8px;
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a class="back-btn" href="index.html"><span>←</span> Back</a>
+  <div class="game-title" id="game-title">Loading...</div>
+  <span class="badge" id="type-badge"></span>
+  <button class="btn-fullscreen" id="btn-fs">⛶ Fullscreen</button>
+</div>
+
+<div class="game-wrap" id="game-wrap">
+
+  <!-- Loading overlay -->
+  <div class="overlay" id="overlay">
+    <div class="overlay-icon" id="overlay-icon">🎮</div>
+    <div class="overlay-text" id="overlay-text">LOADING GAME</div>
+    <div class="overlay-sub" id="overlay-sub">Please wait...</div>
+    <div class="progress-bar"><div class="progress-fill"></div></div>
+  </div>
+
+  <!-- Error screen -->
+  <div class="error-screen" id="error-screen">
+    <h2>⚠ LOAD ERROR</h2>
+    <p id="error-msg">Could not load game. The file may be missing or the path is incorrect.</p>
+    <a href="index.html">← Back to Games</a>
+  </div>
+
+  <!-- HTML5 game -->
+  <iframe id="html5-frame" allowfullscreen sandbox="allow-scripts allow-same-origin allow-popups allow-forms allow-pointer-lock"></iframe>
+
+  <!-- SWF via Ruffle -->
+  <div id="ruffle-wrap"></div>
+
+</div>
+
+<script>
+  // Parse URL params
+  const params = new URLSearchParams(location.search);
+  const gamePath = params.get('path') || '';
+  const gameType = params.get('type') || 'html';
+  const gameName = params.get('name') || 'Game';
+
+  // CDN base — update this to your repo
+  const CDN_BASE = 'https://cdn.jsdelivr.net/gh/classrom-gg/classrom-gg@main';
+
+  const gameUrl = gamePath.startsWith('http') ? gamePath : `${CDN_BASE}/${gamePath}`;
+
+  // Set title
+  document.title = `${gameName} — Classrom.GG`;
+  document.getElementById('game-title').textContent = gameName;
+
+  const badge = document.getElementById('type-badge');
+  if (gameType === 'swf') {
+    badge.textContent = 'FLASH';
+    badge.className = 'badge badge-flash';
+    document.getElementById('overlay-icon').textContent = '🎮';
+    document.getElementById('overlay-text').textContent = 'LOADING FLASH';
+    document.getElementById('overlay-sub').textContent = 'Starting Ruffle emulator...';
+  } else {
+    badge.textContent = 'HTML5';
+    badge.className = 'badge badge-html5';
+  }
+
+  function showError(msg) {
+    document.getElementById('overlay').classList.add('hidden');
+    document.getElementById('error-screen').classList.add('show');
+    if (msg) document.getElementById('error-msg').textContent = msg;
+  }
+
+  function hideOverlay() {
+    document.getElementById('overlay').classList.add('hidden');
+  }
+
+  // ── LOAD HTML5 GAME ──
+  function loadHTML5() {
+    const frame = document.getElementById('html5-frame');
+    frame.style.display = 'block';
+    frame.src = gameUrl;
+    frame.onload = () => setTimeout(hideOverlay, 300);
+    frame.onerror = () => showError('Could not load HTML5 game. Check if the file exists on CDN.');
+    // Fallback timeout
+    setTimeout(() => {
+      if (!document.getElementById('overlay').classList.contains('hidden')) hideOverlay();
+    }, 5000);
+  }
+
+  // ── LOAD SWF VIA RUFFLE ──
+  function loadSWF() {
+    const wrap = document.getElementById('ruffle-wrap');
+    wrap.style.display = 'flex';
+
+    // Load Ruffle from unpkg CDN
+    window.RufflePlayer = window.RufflePlayer || {};
+
+    const script = document.createElement('script');
+    script.src = 'https://unpkg.com/@ruffle-rs/ruffle';
+    script.onload = () => {
+      try {
+        const ruffle = window.RufflePlayer.newest();
+        const player = ruffle.createPlayer();
+        player.style.width = '100%';
+        player.style.height = '100%';
+        wrap.appendChild(player);
+        player.load({
+          url: gameUrl,
+          allowScriptAccess: 'always',
+          backgroundColor: '#000000',
+        }).then(() => {
+          hideOverlay();
+        }).catch(err => {
+          showError('Ruffle could not load this SWF file: ' + err.message);
+        });
+      } catch(e) {
+        showError('Ruffle emulator failed to initialize: ' + e.message);
+      }
+    };
+    script.onerror = () => showError('Could not load Ruffle emulator. Check your internet connection.');
+    document.head.appendChild(script);
+  }
+
+  // ── START ──
+  if (!gamePath) {
+    showError('No game specified. Please go back and select a game.');
+  } else if (gameType === 'swf') {
+    loadSWF();
+  } else {
+    loadHTML5();
+  }
+
+  // ── FULLSCREEN ──
+  document.getElementById('btn-fs').addEventListener('click', () => {
+    const wrap = document.getElementById('game-wrap');
+    if (!document.fullscreenElement) {
+      wrap.requestFullscreen().catch(() => {});
+    } else {
+      document.exitFullscreen();
+    }
+  });
+  document.addEventListener('fullscreenchange', () => {
+    const btn = document.getElementById('btn-fs');
+    btn.textContent = document.fullscreenElement ? '✕ Exit Full' : '⛶ Fullscreen';
+  });
+</script>
+</body>
+</html>
