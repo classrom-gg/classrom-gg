@@ -4,7 +4,7 @@
       "name": "Slope",
       "slug": "slope",
       "type": "html",
-      "url": "https://slope-game.io",
+      "url": "/data/games/slope/index.html",
       "thumb": "",
       "description": "Roll down an endless slope, avoiding obstacles at breakneck speeds. How far can you go?",
       "category": "Action"
