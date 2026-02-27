@@ -5,7 +5,7 @@
       "slug": "slope",
       "type": "html",
       "url": "/data/games/slope/index.html",
-      "thumb": "",
+      "thumb": "/data/thumbs/slope.png",
       "description": "Roll down an endless slope, avoiding obstacles at breakneck speeds. How far can you go?",
       "category": "Action"
     },
