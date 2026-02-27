@@ -75,6 +75,16 @@
       "description": "Guide a ball down a neon slope. How far can you go?",
       "tags": ["skill", "endless", "3d"]
     }
+    {
+      "name": "Retro Bowl",
+      "slug": "retro-bowl",
+      "type": "html",
+      "source": "iframe",
+      "iframeUrl": "/data/pages/retro-bowl/index.html",
+      "thumb": "/data/thumbs/retrobowl.png",
+      "description": "Retro Bowl Unblocked",
+      "tags": ["skill", "endless", "3d"]
+    }
 
   ]
 }
