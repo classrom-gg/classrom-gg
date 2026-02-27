@@ -581,7 +581,7 @@ function renderCards(games) {
     // Thumb: dùng g.thumb nếu có, fallback về data/thumbs/<slug>.png
     const thumbSrc = g.thumb || `data/thumbs/${slug}.png`;
     return `
-    <a class="card" href="game.html?slug=${slug}" style="animation-delay:${Math.min(i*0.035,0.5)}s">
+    <a class="card" href="${slug}/" style="animation-delay:${Math.min(i*0.035,0.5)}s">
       <div class="card-thumb">
         <img src="${thumbSrc}" alt="${g.name}" loading="lazy"
           onerror="this.style.display='none';this.nextSibling.style.display='flex'">
