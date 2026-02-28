@@ -1,7 +1,5 @@
 /**
  * Classrom.GG — Static Page Generator (Node.js)
- * Chạy bởi GitHub Actions: OUT_DIR=_site node generate-games.js
- * Output: _site/g/slope/index.html, _site/sitemap.xml, _site/robots.txt
  */
 
 const fs   = require('fs');
@@ -12,7 +10,7 @@ const OUT_DIR   = process.env.OUT_DIR || '_site';
 const GAMES_FILE = 'games.json';
 
 // ════════════════════════════════════════════════════════
-// ██  GLOBAL CONFIG — chỉnh sửa ở đây, apply toàn bộ trang
+// ██  GLOBAL CONFIG
 // ════════════════════════════════════════════════════════
 const GLOBAL_HEAD = `
   <!-- Google Analytics -->
@@ -37,7 +35,7 @@ const GLOBAL_HEAD = `
 const { games } = JSON.parse(fs.readFileSync(GAMES_FILE, 'utf8'));
 
 
-// Resolve path tương đối từ games.json → thêm ../../ nếu cần
+// Resolve path tương đối từ games.json → thêm ../../
 function resolvePath(p, prefix='../../') {
   if (!p || !p.trim()) return null;
   if (p.startsWith('http')) return p;
