@@ -30,64 +30,36 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Generate game pages into _site/g/
+      - name: Generate game pages
         run: OUT_DIR=_site node generate-games.js
 
       - name: Inject GLOBAL_HEAD into static pages
-        run: |
-          # Đọc GLOBAL_HEAD từ generate-games.js rồi inject vào các file tĩnh
-          node -e "
-            const fs = require('fs');
-            // Lấy GLOBAL_HEAD string từ config
-            eval(fs.readFileSync('generate-games.js','utf8').match(/const GLOBAL_HEAD = [\`'][\s\S]*?[\`'];/)[0]);
-            const files = ['index.html','game.html','privacy.html','terms.html','dmca.html','contact.html'];
-            files.forEach(f => {
-              if (!fs.existsSync(f)) return;
-              let html = fs.readFileSync(f, 'utf8');
-              html = html.replace('</head>', GLOBAL_HEAD + '
-</head>');
-              fs.mkdirSync('_site', {recursive: true});
-              fs.writeFileSync('_site/' + f, html);
-              console.log('✅ injected:', f);
-            });
-          "
+        run: node inject.js
 
-      - name: Copy static files into _site/
+      - name: Copy all files into _site/
         run: |
           cp games.json _site/
-
-          [ -d assets ]      && cp -r assets      _site/
-          [ -d data ]        && cp -r data         _site/
-          [ -f favicon.ico ] && cp favicon.ico     _site/
-          [ -f favicon.png ] && cp favicon.png     _site/
-
-          echo "✅ _site contents:"
-          find _site -maxdepth 3 | sort
-
-      - name: Copy verification & misc files (must run last)
-        run: |
-          # Copy tất cả file txt, xml ở root
+          [ -d assets ]      && cp -r assets   _site/
+          [ -d data ]        && cp -r data      _site/
+          [ -f favicon.ico ] && cp favicon.ico  _site/
+          [ -f favicon.png ] && cp favicon.png  _site/
           for f in *.txt *.xml; do
+            [ -f "$f" ] && cp "$f" _site/
+          done
+          for f in google*.html bing*.html yandex*.html; do
             [ -f "$f" ] && cp "$f" _site/ && echo "copied: $f"
           done
-
-          # Copy Google/Bing/Yandex verification html — KHÔNG inject GLOBAL_HEAD
-          # Nhận dạng: file html nhỏ, tên bắt đầu bằng google/bing/yandex hoặc chứa verify
-          for f in google*.html bing*.html yandex*.html *verify*.html *verification*.html; do
-            [ -f "$f" ] && cp "$f" _site/ && echo "copied verification: $f"
-          done
-
-          echo "Final _site root:"
-          ls _site/*.html _site/*.txt _site/*.xml 2>/dev/null | sort
+          echo "=== _site ==="
+          find _site -maxdepth 2 | sort
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
 
-      - name: Upload _site/ artifact
+      - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: '_site'
 
-      - name: Deploy to GitHub Pages
+      - name: Deploy
         id: deployment
         uses: actions/deploy-pages@v4
