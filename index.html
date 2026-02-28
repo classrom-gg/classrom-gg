@@ -175,6 +175,13 @@
   footer p a { color: var(--accent); text-decoration: none; }
   footer p a:hover { text-decoration: underline; }
 
+  /* CATEGORY FILTERS */
+  .filter-row { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; padding: 0 32px 16px; }
+  .filter-row-label { width: 100%; text-align: center; font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+  .cat-btn { padding: 6px 16px; border-radius: 999px; border: 1px solid var(--border); background: transparent; color: var(--muted); font-family: 'Rajdhani', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; transition: all 0.2s; }
+  .cat-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .cat-btn.active { background: var(--accent); border-color: var(--accent); color: #000; }
+
   /* RESPONSIVE */
   @media (max-width: 600px) {
     .grid { grid-template-columns: repeat(auto-fill, minmax(145px, 1fr)); padding: 0 14px; }
@@ -227,6 +234,8 @@
   <button class="filter-btn flash" data-filter="swf" onclick="setFilter('swf')">🎮 Flash</button>
 </div>
 
+<div class="filter-row" id="cat-row"></div>
+
 <p class="section-title" id="section-label">ALL GAMES — <span id="game-count">0</span> GAMES</p>
 
 <main class="grid" id="grid">
@@ -264,7 +273,7 @@
 <script>
 const GAMES_PER_PAGE = 24;
 const EMOJIS = ['🎮','🕹️','👾','🎲','⚔️','🚀','🏎️','🎯','🧩','🌟','🔥','💎','🐉','🦊','🤖'];
-let allGames = [], filteredGames = [], currentFilter = 'all', currentPage = 1;
+let allGames = [], filteredGames = [], currentFilter = 'all', currentCategory = 'all', currentPage = 1;
 
 function getStoredTheme() { return localStorage.getItem('cgTheme') || 'dark'; }
 function applyTheme(theme) {
@@ -346,16 +355,18 @@ function goPage(n) {
 }
 
 function updateSectionLabel() {
-  const labels = { all: 'ALL GAMES', html: 'HTML5 GAMES', swf: 'FLASH GAMES' };
-  document.getElementById('section-label').innerHTML = `${labels[currentFilter]} — <span id="game-count">${filteredGames.length}</span> GAMES`;
+  const typeLabel = { all: 'ALL GAMES', html: 'HTML5 GAMES', swf: 'FLASH GAMES' }[currentFilter] || 'ALL GAMES';
+  const catLabel  = currentCategory !== 'all' ? ' › ' + currentCategory.toUpperCase() : '';
+  document.getElementById('section-label').innerHTML = typeLabel + catLabel + ' — <span id="game-count">' + filteredGames.length + '</span> GAMES';
 }
 
 function applyFilters() {
   const q = document.getElementById('search').value.toLowerCase().trim();
   filteredGames = allGames.filter(g => {
     const typeMatch = currentFilter === 'all' || g.type === currentFilter;
+    const catMatch  = currentCategory === 'all' || g.category === currentCategory;
     const nameMatch = !q || g.name.toLowerCase().includes(q);
-    return typeMatch && nameMatch;
+    return typeMatch && catMatch && nameMatch;
   });
   currentPage = 1;
   updateSectionLabel();
@@ -365,8 +376,23 @@ function applyFilters() {
 
 function setFilter(f) {
   currentFilter = f;
+  currentCategory = 'all';
   document.querySelectorAll('.filter-btn').forEach(b => b.classList.toggle('active', b.dataset.filter === f));
+  document.querySelectorAll('.cat-btn').forEach(b => b.classList.toggle('active', b.dataset.cat === 'all'));
   applyFilters();
+}
+
+function setCategory(cat) {
+  currentCategory = cat;
+  document.querySelectorAll('.cat-btn').forEach(b => b.classList.toggle('active', b.dataset.cat === cat));
+  applyFilters();
+}
+
+function renderCategories() {
+  const cats = ['all', ...new Set(allGames.map(g => g.category).filter(Boolean))].sort((a,b) => a==='all'?-1:a.localeCompare(b));
+  const icons = { Action:'⚔️', Platformer:'🕹️', Puzzle:'🧩', Shooter:'🔫', Sports:'🏆', Racing:'🏎️', Tower Defense:'🗼', Classic:'👾', Physics:'⚙️' };
+  document.getElementById('cat-row').innerHTML =
+    cats.map(c => `<button class="cat-btn${c==='all'?' active':''}" data-cat="${c}" onclick="setCategory('${c}')">${c==='all'?'🗂️ All Categories':(icons[c]||'🎮')+' '+c}</button>`).join('');
 }
 
 async function loadGames() {
@@ -380,6 +406,7 @@ async function loadGames() {
     document.getElementById('total-count').textContent = allGames.length;
     document.getElementById('html5-count').textContent = html5;
     document.getElementById('flash-count').textContent = flash;
+    renderCategories();
     applyFilters();
   } catch(e) {
     document.getElementById('grid').innerHTML = `<div class="empty"><span class="empty-icon">⚠️</span><p>COULD NOT LOAD<br>GAMES.JSON</p></div>`;
