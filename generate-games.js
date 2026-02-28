@@ -1,5 +1,7 @@
 /**
  * Classrom.GG — Static Page Generator (Node.js)
+ * Chạy bởi GitHub Actions: OUT_DIR=_site node generate-games.js
+ * Output: _site/g/slope/index.html, _site/sitemap.xml, _site/robots.txt
  */
 
 const fs   = require('fs');
@@ -10,22 +12,24 @@ const OUT_DIR   = process.env.OUT_DIR || '_site';
 const GAMES_FILE = 'games.json';
 
 // ════════════════════════════════════════════════════════
-// ██  GLOBAL CONFIG
+// ██  GLOBAL CONFIG — chỉnh sửa ở đây, apply toàn bộ trang
 // ════════════════════════════════════════════════════════
 const GLOBAL_HEAD = `
   <!-- Google Analytics -->
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y8X09V4JQD"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+  <!-- Paste GA4 tag vào đây -->
+  <!-- <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-XXXXXXXXXX');
+  </script> -->
 
-  gtag('config', 'G-Y8X09V4JQD');
-</script>
+  <!-- Google Search Console verification -->
+  <!-- <meta name="google-site-verification" content="PASTE_YOUR_CODE_HERE"> -->
 
   <!-- Adsense -->
-
+  <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXX" crossorigin="anonymous"></script> -->
 `.trim();
 // ════════════════════════════════════════════════════════
 
@@ -33,7 +37,7 @@ const GLOBAL_HEAD = `
 const { games } = JSON.parse(fs.readFileSync(GAMES_FILE, 'utf8'));
 
 
-// Resolve path tương đối từ games.json → thêm ../../
+// Resolve path tương đối từ games.json → thêm ../../ nếu cần
 function resolvePath(p, prefix='../../') {
   if (!p || !p.trim()) return null;
   if (p.startsWith('http')) return p;
@@ -66,6 +70,10 @@ function makePage(game, allGames) {
   const desc     = game.description || `Play ${name} free online at Classrom.GG.`;
   const category = game.category || '';
   const developer= game.developer || '';
+  const controls     = game.controls     || '';
+  const tips         = game.tips         || [];   // array of strings
+  const creator      = game.creator      || '';
+  const instructions = game.instructions || '';
   const thumb    = resolvePath(game.thumb) || `../../data/thumbs/${slug}.png`;
   const canonUrl = `${SITE_URL}/g/${slug}/`;
   const rawThumb = game.thumb && game.thumb.trim() ? game.thumb : `data/thumbs/${slug}.png`;
@@ -157,11 +165,32 @@ function makePage(game, allGames) {
             <span class="info-val">${escHtml(developer)}</span>
           </div>`;
 
-  const descBlock = desc ? `
-        <div class="game-description">
-          <h3>About this game</h3>
-          <p>${escHtml(desc)}</p>
-        </div>` : '';
+  // ── About block ──
+  const descBlock = desc
+    ? '<div class="game-description"><h3>About this game</h3><p>' + escHtml(desc) + '</p></div>'
+    : '';
+
+  // ── Controls block ──
+  const controlsHtml = escHtml(controls).replace(/\n/g, '<br>');
+  const controlsBlock = controls
+    ? '<div class="game-description"><h3>Controls</h3><p>' + controlsHtml + '</p></div>'
+    : '';
+
+  // ── Tips block ──
+  const tipsItems = tips.map(t => '<li>' + escHtml(t) + '</li>').join('');
+  const tipsBlock = tips.length
+    ? '<div class="game-description"><h3>Tips &amp; Tricks</h3><ul class="tips-list">' + tipsItems + '</ul></div>'
+    : '';
+
+  // ── Creator block ──
+  const creatorBlock = creator
+    ? '<div class="game-description"><h3>About the creator</h3><p>' + escHtml(creator) + '</p></div>'
+    : '';
+
+  // ── Instructions block ──
+  const instructionsBlock = instructions
+    ? '<div class="game-description"><h3>Instructions</h3><p>' + escHtml(instructions).replace(/\n/g, '<br>') + '</p></div>'
+    : '';
 
   const relatedBlock = relatedHtml ? `
         <div class="sidebar-section">
@@ -209,57 +238,58 @@ function makePage(game, allGames) {
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
 ${GLOBAL_HEAD}
 <style>
-  :root[data-theme="dark"]{--bg:#0a0a0f;--card:#13131f;--border:#1e1e32;--accent:#00ffaa;--accent2:#ff3e6c;--accent3:#7c3aed;--text:#e2e8f0;--muted:#64748b;}
-  :root[data-theme="light"]{--bg:#f0f4f8;--card:#fff;--border:#d1d9e6;--accent:#059669;--accent2:#e11d48;--accent3:#7c3aed;--text:#1e293b;--muted:#64748b;}
-  *{margin:0;padding:0;box-sizing:border-box;}
-  body{background:var(--bg);color:var(--text);font-family:'Rajdhani',sans-serif;min-height:100vh;overflow-x:hidden;transition:background .3s,color .3s;}
-  [data-theme="dark"] body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.06) 2px,rgba(0,0,0,.06) 4px);pointer-events:none;z-index:1;}
-  header{padding:16px 32px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);background:var(--bg);position:sticky;top:0;z-index:100;}
-  .logo{font-family:'Press Start 2P',monospace;font-size:13px;color:var(--accent);text-decoration:none;}
-  [data-theme="dark"] .logo{text-shadow:0 0 20px rgba(0,255,170,.5);}
-  .logo span{color:var(--accent2);}
-  .header-right{display:flex;gap:16px;align-items:center;}
-  .back-btn{display:flex;align-items:center;gap:8px;color:var(--muted);text-decoration:none;font-weight:700;font-size:12px;letter-spacing:1px;text-transform:uppercase;background:var(--card);border:1px solid var(--border);border-radius:6px;padding:7px 14px;transition:all .2s;}
-  .back-btn:hover{color:var(--accent);border-color:var(--accent);}
-  .theme-toggle{background:var(--card);border:1px solid var(--border);border-radius:999px;padding:6px 14px;cursor:pointer;font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;letter-spacing:1px;color:var(--text);display:flex;align-items:center;gap:6px;transition:all .2s;}
-  .theme-toggle:hover{border-color:var(--accent);}
-  .breadcrumb{padding:12px 32px;font-size:12px;color:var(--muted);font-weight:700;border-bottom:1px solid var(--border);}
-  .breadcrumb a{color:var(--accent);text-decoration:none;}
-  .game-layout{max-width:1300px;margin:0 auto;padding:32px 32px 60px;display:grid;grid-template-columns:1fr 320px;gap:28px;align-items:start;}
-  .game-title{font-family:'Press Start 2P',monospace;font-size:clamp(12px,1.8vw,18px);color:var(--text);margin-bottom:16px;line-height:1.5;}
-  .game-title em{font-style:normal;color:var(--accent);}
-  .game-frame-wrap{position:relative;background:var(--bg);border:1px solid var(--border);border-radius:10px;overflow:hidden;box-shadow:0 4px 32px rgba(0,0,0,.4);isolation:isolate;z-index:2;}
-  .game-frame-inner{position:relative;padding-bottom:62.5%;height:0;overflow:hidden;background:var(--bg);}
-  .game-frame-inner iframe,.game-frame-inner canvas,.game-frame-inner ruffle-player,.game-frame-inner .ruffle-container,.game-frame-inner .ruffle-container *{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;border:none!important;margin:0!important;padding:0!important;display:block!important;opacity:1!important;filter:none!important;mix-blend-mode:normal!important;-webkit-filter:none!important;background:var(--bg)!important;}
-  .game-toolbar{display:flex;gap:10px;align-items:center;padding:12px 0 0;flex-wrap:wrap;}
-  .tool-btn{padding:8px 18px;border-radius:6px;border:1px solid var(--border);background:var(--card);color:var(--muted);font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:6px;text-decoration:none;}
-  .tool-btn:hover{border-color:var(--accent);color:var(--accent);}
-  .tool-btn.primary{background:var(--accent3);border-color:var(--accent3);color:#fff;}
-  .tool-btn.primary:hover{box-shadow:0 0 16px rgba(124,58,237,.4);}
-  .game-description{margin-top:24px;padding:20px;background:var(--card);border:1px solid var(--border);border-radius:10px;}
-  .game-description h3{font-family:'Press Start 2P',monospace;font-size:10px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:12px;}
-  .game-description p{color:var(--muted);font-size:15px;font-weight:600;line-height:1.7;}
-  .sidebar-section{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:18px;margin-bottom:20px;}
-  .sidebar-title{font-family:'Press Start 2P',monospace;font-size:9px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:14px;}
-  .sidebar-title span{color:var(--accent);}
-  .info-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;font-weight:700;}
-  .info-row:last-child{border-bottom:none;}
-  .info-label{color:var(--muted);letter-spacing:.5px;text-transform:uppercase;font-size:11px;}
-  .info-val{color:var(--text);}
-  .badge{font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:2px 8px;border-radius:4px;}
-  .badge-html5{background:rgba(14,165,233,.15);color:#38bdf8;border:1px solid rgba(14,165,233,.3);}
-  .badge-flash{background:rgba(255,62,108,.15);color:#fb7185;border:1px solid rgba(255,62,108,.3);}
+:root[data-theme="dark"]{--bg:#0a0a0f;--card:#13131f;--border:#1e1e32;--accent:#00ffaa;--accent2:#ff3e6c;--accent3:#7c3aed;--text:#e2e8f0;--muted:#64748b;}
+:root[data-theme="light"]{--bg:#f0f4f8;--card:#fff;--border:#d1d9e6;--accent:#059669;--accent2:#e11d48;--accent3:#7c3aed;--text:#1e293b;--muted:#64748b;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'Rajdhani',sans-serif;min-height:100vh;overflow-x:hidden;transition:background .3s,color .3s;}
+[data-theme="dark"] body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.06) 2px,rgba(0,0,0,.06) 4px);pointer-events:none;z-index:1;}
+header{padding:16px 32px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);background:var(--bg);position:sticky;top:0;z-index:100;}
+.logo{font-family:'Press Start 2P',monospace;font-size:13px;color:var(--accent);text-decoration:none;}
+[data-theme="dark"] .logo{text-shadow:0 0 20px rgba(0,255,170,.5);}
+.logo span{color:var(--accent2);}
+.header-right{display:flex;gap:16px;align-items:center;}
+.back-btn{display:flex;align-items:center;gap:8px;color:var(--muted);text-decoration:none;font-weight:700;font-size:12px;letter-spacing:1px;text-transform:uppercase;background:var(--card);border:1px solid var(--border);border-radius:6px;padding:7px 14px;transition:all .2s;}
+.back-btn:hover{color:var(--accent);border-color:var(--accent);}
+.theme-toggle{background:var(--card);border:1px solid var(--border);border-radius:999px;padding:6px 14px;cursor:pointer;font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;letter-spacing:1px;color:var(--text);display:flex;align-items:center;gap:6px;transition:all .2s;}
+.theme-toggle:hover{border-color:var(--accent);}
+.breadcrumb{padding:12px 32px;font-size:12px;color:var(--muted);font-weight:700;border-bottom:1px solid var(--border);}
+.breadcrumb a{color:var(--accent);text-decoration:none;}
+.game-layout{max-width:1300px;margin:0 auto;padding:32px 32px 60px;display:grid;grid-template-columns:1fr 320px;gap:28px;align-items:start;}
+.game-title{font-family:'Press Start 2P',monospace;font-size:clamp(12px,1.8vw,18px);color:var(--text);margin-bottom:16px;line-height:1.5;}
+.game-title em{font-style:normal;color:var(--accent);}
+.game-frame-wrap{position:relative;background:var(--bg);border:1px solid var(--border);border-radius:10px;overflow:hidden;box-shadow:0 4px 32px rgba(0,0,0,.4);isolation:isolate;z-index:2;}
+.game-frame-inner{position:relative;padding-bottom:62.5%;height:0;overflow:hidden;background:var(--bg);}
+.game-frame-inner iframe,.game-frame-inner canvas,.game-frame-inner ruffle-player,.game-frame-inner .ruffle-container,.game-frame-inner .ruffle-container *{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;border:none!important;margin:0!important;padding:0!important;display:block!important;opacity:1!important;filter:none!important;mix-blend-mode:normal!important;-webkit-filter:none!important;background:var(--bg)!important;}
+.game-toolbar{display:flex;gap:10px;align-items:center;padding:12px 0 0;flex-wrap:wrap;}
+.tool-btn{padding:8px 18px;border-radius:6px;border:1px solid var(--border);background:var(--card);color:var(--muted);font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:6px;text-decoration:none;}
+.tool-btn:hover{border-color:var(--accent);color:var(--accent);}
+.tool-btn.primary{background:var(--accent3);border-color:var(--accent3);color:#fff;}
+.tool-btn.primary:hover{box-shadow:0 0 16px rgba(124,58,237,.4);}
+.game-description{margin-top:24px;padding:20px;background:var(--card);border:1px solid var(--border);border-radius:10px;}
+.game-description h3{font-family:'Press Start 2P',monospace;font-size:10px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:12px;}
+.game-description p{color:var(--muted);font-size:15px;font-weight:600;line-height:1.7;}
+.sidebar-section{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:18px;margin-bottom:20px;}
+.sidebar-title{font-family:'Press Start 2P',monospace;font-size:9px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:14px;}
+.sidebar-title span{color:var(--accent);}
+.info-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;font-weight:700;}
+.info-row:last-child{border-bottom:none;}
+.info-label{color:var(--muted);letter-spacing:.5px;text-transform:uppercase;font-size:11px;}
+.info-val{color:var(--text);}
+.badge{font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:2px 8px;border-radius:4px;}
+.badge-html5{background:rgba(14,165,233,.15);color:#38bdf8;border:1px solid rgba(14,165,233,.3);}
+.badge-flash{background:rgba(255,62,108,.15);color:#fb7185;border:1px solid rgba(255,62,108,.3);}
+.tips-list{color:var(--muted);font-size:15px;font-weight:600;line-height:1.8;padding-left:20px;}.tips-list li{margin-bottom:6px;}
   .related-card{display:flex;gap:12px;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);text-decoration:none;color:inherit;transition:all .15s;}
-  .related-card:last-child{border-bottom:none;}
-  .related-card:hover .related-name{color:var(--accent);}
-  .related-thumb{width:64px;height:36px;border-radius:4px;background:linear-gradient(135deg,#1a1a2e,#0f3460);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:18px;overflow:hidden;border:1px solid var(--border);position:relative;}
-  .related-thumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;opacity:1;filter:none;}
-  .related-name{font-size:13px;font-weight:700;transition:color .15s;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  .related-type{font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-top:3px;}
-  footer{border-top:1px solid var(--border);padding:24px 32px;text-align:center;color:var(--muted);font-size:13px;font-weight:600;}
-  footer a{color:var(--accent);text-decoration:none;}
-  @media(max-width:900px){.game-layout{grid-template-columns:1fr;}}
-  @media(max-width:600px){header{padding:14px 16px;}.breadcrumb,.game-layout{padding-left:14px;padding-right:14px;}.logo{font-size:11px;}}
+.related-card:last-child{border-bottom:none;}
+.related-card:hover .related-name{color:var(--accent);}
+.related-thumb{width:64px;height:36px;border-radius:4px;background:linear-gradient(135deg,#1a1a2e,#0f3460);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:18px;overflow:hidden;border:1px solid var(--border);position:relative;isolation:isolate;}
+.related-thumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;opacity:1;filter:none;z-index:2;}
+.related-name{font-size:13px;font-weight:700;transition:color .15s;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.related-type{font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-top:3px;}
+footer{border-top:1px solid var(--border);padding:24px 32px;text-align:center;color:var(--muted);font-size:13px;font-weight:600;}
+footer a{color:var(--accent);text-decoration:none;}
+@media(max-width:900px){.game-layout{grid-template-columns:1fr;}}
+@media(max-width:600px){header{padding:14px 16px;}.breadcrumb,.game-layout{padding-left:14px;padding-right:14px;}.logo{font-size:11px;}}
 </style>
 </head>
 <body>
@@ -293,6 +323,10 @@ ${GLOBAL_HEAD}
       <a class="tool-btn" href="../../">← All Games</a>
     </div>
     ${descBlock}
+    ${controlsBlock}
+    ${instructionsBlock}
+    ${tipsBlock}
+    ${creatorBlock}
   </div>
   <aside>
     <div class="sidebar-section">
