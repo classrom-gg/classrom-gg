@@ -63,14 +63,5 @@
       "description": "Classic snake game. Eat food, grow longer, don't hit the walls!",
       "category": "Classic"
     },
-    {
-      "name": "Tetris",
-      "slug": "tetris",
-      "type": "html",
-      "url": "data/games/tetris/index.html",
-      "thumb": "data/thumbs/tetris.png",
-      "description": "The original puzzle game. Stack blocks and clear lines!",
-      "category": "Puzzle"
-    }
   ]
 }
