@@ -14,6 +14,15 @@ const GAMES_FILE = 'games.json';
 // ── Load games ──────────────────────────────────────────────────────────────
 const { games } = JSON.parse(fs.readFileSync(GAMES_FILE, 'utf8'));
 
+
+// Resolve path tương đối từ games.json → thêm ../../ nếu cần
+function resolvePath(p, prefix='../../') {
+  if (!p || !p.trim()) return null;
+  if (p.startsWith('http')) return p;
+  // Nếu đã có prefix rồi thì không thêm nữa
+  if (p.startsWith('../')) return p;
+  return prefix + p;
+}
 function toSlug(name) {
   return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 }
@@ -39,11 +48,10 @@ function makePage(game, allGames) {
   const desc     = game.description || `Play ${name} free online at Classrom.GG.`;
   const category = game.category || '';
   const developer= game.developer || '';
-  const thumb    = game.thumb    || `../../data/thumbs/${slug}.png`;
+  const thumb    = resolvePath(game.thumb) || `../../data/thumbs/${slug}.png`;
   const canonUrl = `${SITE_URL}/g/${slug}/`;
-  const ogImage  = game.thumb
-    ? (game.thumb.startsWith('http') ? game.thumb : `${SITE_URL}/${game.thumb.replace(/^\.\.\/\.\.\//, '')}`)
-    : `${SITE_URL}/data/thumbs/${slug}.png`;
+  const rawThumb = game.thumb && game.thumb.trim() ? game.thumb : `data/thumbs/${slug}.png`;
+  const ogImage  = rawThumb.startsWith('http') ? rawThumb : `${SITE_URL}/${rawThumb.replace(/^\.\.\/\.\.\//, '')}`;
 
   // Game URL — từ _site/g/<slug>/ cần lên 2 cấp để vào data/
   let gameUrl = '';
@@ -81,7 +89,7 @@ function makePage(game, allGames) {
 
   const relatedHtml = related.map(g => {
     const gs  = g.slug || toSlug(g.name);
-    const gt  = g.thumb || `../../data/thumbs/${gs}.png`;
+    const gt  = resolvePath(g.thumb) || `../../data/thumbs/${gs}.png`;
     const em  = getEmoji(g.name);
     const typ = g.type === 'swf' ? '🎮 Flash' : '🌐 HTML5';
     return `
@@ -215,8 +223,8 @@ function makePage(game, allGames) {
   .related-card{display:flex;gap:12px;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);text-decoration:none;color:inherit;transition:all .15s;}
   .related-card:last-child{border-bottom:none;}
   .related-card:hover .related-name{color:var(--accent);}
-  .related-thumb{width:64px;height:36px;border-radius:4px;background:linear-gradient(135deg,#1a1a2e,#0f3460);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:18px;overflow:hidden;border:1px solid var(--border);}
-  .related-thumb img{width:100%;height:100%;object-fit:cover;}
+  .related-thumb{width:64px;height:36px;border-radius:4px;background:linear-gradient(135deg,#1a1a2e,#0f3460);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:18px;overflow:hidden;border:1px solid var(--border);position:relative;}
+  .related-thumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;opacity:1;filter:none;}
   .related-name{font-size:13px;font-weight:700;transition:color .15s;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .related-type{font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-top:3px;}
   footer{border-top:1px solid var(--border);padding:24px 32px;text-align:center;color:var(--muted);font-size:13px;font-weight:600;}
