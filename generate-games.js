@@ -76,12 +76,13 @@ function makePage(game, allGames) {
   try {
     const ruffle = window.RufflePlayer.newest();
     const player = ruffle.createPlayer();
-    player.style.cssText = `position:absolute;inset:0;width:100%;height:100%;background:${getComputedStyle(document.documentElement).getPropertyValue('--bg').trim()||'#0a0a0f'}`;
+    const bgColor = getComputedStyle(document.documentElement).getPropertyValue('--bg').trim() || '#0a0a0f';
+    player.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;background:' + bgColor;
     document.getElementById('ruffle-container').appendChild(player);
     player.load({
       url: '${gameUrl}',
       parameters: '',
-      backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--bg').trim() || '#0a0a0f',
+      backgroundColor: bgColor,
       scale: 'showAll',
       quality: 'high',
       wmode: 'transparent',
