@@ -33,15 +33,28 @@ jobs:
       - name: Generate game pages into _site/g/
         run: OUT_DIR=_site node generate-games.js
 
+      - name: Inject GLOBAL_HEAD into static pages
+        run: |
+          # Đọc GLOBAL_HEAD từ generate-games.js rồi inject vào các file tĩnh
+          node -e "
+            const fs = require('fs');
+            // Lấy GLOBAL_HEAD string từ config
+            eval(fs.readFileSync('generate-games.js','utf8').match(/const GLOBAL_HEAD = [\`'][\s\S]*?[\`'];/)[0]);
+            const files = ['index.html','game.html','privacy.html','terms.html','dmca.html','contact.html'];
+            files.forEach(f => {
+              if (!fs.existsSync(f)) return;
+              let html = fs.readFileSync(f, 'utf8');
+              html = html.replace('</head>', GLOBAL_HEAD + '
+</head>');
+              fs.mkdirSync('_site', {recursive: true});
+              fs.writeFileSync('_site/' + f, html);
+              console.log('✅ injected:', f);
+            });
+          "
+
       - name: Copy static files into _site/
         run: |
-          cp index.html   _site/
-          cp game.html    _site/
           cp games.json   _site/
-          cp privacy.html _site/
-          cp terms.html   _site/
-          cp dmca.html    _site/
-          cp contact.html _site/
 
           [ -d data ]        && cp -r data        _site/
           [ -f favicon.ico ] && cp favicon.ico    _site/
