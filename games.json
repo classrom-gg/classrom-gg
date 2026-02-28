@@ -62,6 +62,6 @@
       "thumb": "data/thumbs/snake.png",
       "description": "Classic snake game. Eat food, grow longer, don't hit the walls!",
       "category": "Classic"
-    },
+    }
   ]
 }
