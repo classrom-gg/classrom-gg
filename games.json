@@ -7,6 +7,15 @@
       "url": "data/games/slope/index.html",
       "thumb": "data/thumbs/slope.png",
       "description": "Slope is a fun endless running game created by RobKayS. Guide a rolling ball down a steep, neon-lit slope while avoiding obstacles and staying on the platform. Be careful – if you hit a red block or fall off the edge, it's game over! Play Slope and experience what life is like racing at breakneck speeds through an infinite 3D course. If you succeed, you'll rack up high scores and test your reflexes – but be careful, the speed keeps increasing and the course gets more treacherous! Experience Slope online right from your browser with Classroom-gg and test your reaction time and hand-eye coordination skills. You can play Slope for free, but one wrong move will end your run.",
+      "instructions": "Controls:
+Arrow Keys or A/D - Steer left and right
+Tips and tricks:
+
+Don't be afraid to make small adjustments rather than sharp turns to maintain control.
+Use the anticipation skills you've developed to look ahead and plan your path before obstacles appear!
+
+About the creator:
+Slope is created by RobKayS, known for developing addictive skill-based arcade games with minimalist design.",
       "category": "Action"
     },
     {
@@ -16,6 +25,16 @@
       "url": "data/games/run-3/index.html",
       "thumb": "data/thumbs/run3.png",
       "description": "Run 3 is a fun endless runner game created by Player 03. Navigate through space tunnels by running and jumping while gravity shifts around you. Be careful – if you fall into the void or hit obstacles, you'll have to restart from the last checkpoint! Play Run 3 and experience what life is like running through an infinite cosmic obstacle course. If you succeed, you'll unlock new characters and discover secret tunnels – but be careful, levels get more complex with rotating gravity and challenging gaps! Experience Run 3 online right from your browser with Classroom-gg and test your spatial awareness and platforming skills. You can play Run 3 for free, but a wrong jump will send you into space.",
+      "instructions": "Controls:
+Arrow Keys or WASD - Move and jump
+Space - Jump
+Tips and tricks:
+
+Don't be afraid to use the walls and ceiling as the floor when gravity shifts.
+Use the different characters you've unlocked – each has unique abilities that help in specific tunnel types!
+
+About the creator:
+Run 3 is created by Player 03, known for developing the popular Run series with innovative gravity-based mechanics.",
       "category": "Action"
     },
     {
@@ -25,6 +44,17 @@
       "url": "data/games/super-mario-flash/super-mario-flash.swf",
       "thumb": "data/thumbs/super-mario-flash.png",
       "description": "Super Mario Flash is a fun platformer game created by Pouetpu. Play through classic Mario-style levels or create your own using the built-in level editor. Be careful – if you fall into pits or get hit by enemies too many times, you'll lose a life! Play Super Mario Flash and experience what life is like in a fan-made tribute to the iconic Mario series. If you succeed, you'll complete all levels and even design your own challenges – but be careful, tough platforming and enemies await! Experience Super Mario Flash online right from your browser with Classroom-gg and test your platforming and creativity skills. You can play Super Mario Flash for free, but a wrong jump will cost you progress.",
+      "instructions": "Controls:
+Arrow Keys - Move
+Shift or A - Jump
+Ctrl or S - Run/Shoot fireballs
+Tips and tricks:
+
+Don't be afraid to explore levels thoroughly for hidden power-ups and secret areas.
+Use the level editor you've discovered to create and share your own custom Mario challenges!
+
+About the creator:
+Super Mario Flash is created by Pouetpu, a fan developer who created this beloved Flash tribute to Nintendo's Super Mario series.",
       "category": "Platformer"
     },
         {
@@ -34,6 +64,17 @@
       "url": "data/games/retro-bowl/index.html",
       "thumb": "data/thumbs/retrobowl.png",
       "description": "Retro Bowl is a fun American football game created by New Star Games. Manage your team and lead them to championship glory with strategic plays and precise throws. Be careful – if you make too many incomplete passes or bad decisions, you'll lose the game! Play Retro Bowl and experience what life is like as both a coach and quarterback in retro-style football. If you succeed, you'll win the Retro Bowl championship – but be careful, managing roster, press, and gameplay requires skill! Experience Retro Bowl online right from your browser with Classroom-gg and test your strategy and timing skills. You can play Retro Bowl for free, but poor management will cost you victories.",
+      "instructions": "Controls:
+Mouse - Aim and throw passes
+Click - Select plays and make decisions
+WASD - Control player movement
+Tips and tricks:
+
+Don't be afraid to invest in your offense early – a strong receiving corps wins games.
+Use the play-calling strategy you've learned to read defenses and exploit mismatches!
+
+About the creator:
+Retro Bowl is created by New Star Games, known for developing engaging sports management games with retro aesthetics.",
       "category": "Platformer"
     },
     {
