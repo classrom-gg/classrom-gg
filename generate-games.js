@@ -200,7 +200,7 @@ function makePage(game, allGames) {
   .game-title{font-family:'Press Start 2P',monospace;font-size:clamp(12px,1.8vw,18px);color:var(--text);margin-bottom:16px;line-height:1.5;}
   .game-title em{font-style:normal;color:var(--accent);}
   .game-frame-wrap{position:relative;background:#000;border:1px solid var(--border);border-radius:10px;overflow:hidden;box-shadow:0 4px 32px rgba(0,0,0,.4);isolation:isolate;z-index:2;}
-  .game-frame-inner{position:relative;padding-bottom:56.25%;height:0;overflow:hidden;background:#000;}
+  .game-frame-inner{position:relative;padding-bottom:62.5%;height:0;overflow:hidden;background:#000;}
   .game-frame-inner iframe,.game-frame-inner canvas,.game-frame-inner ruffle-player,.game-frame-inner .ruffle-container,.game-frame-inner .ruffle-container *{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;border:none!important;margin:0!important;padding:0!important;display:block!important;opacity:1!important;filter:none!important;mix-blend-mode:normal!important;-webkit-filter:none!important;}
   .game-toolbar{display:flex;gap:10px;align-items:center;padding:12px 0 0;flex-wrap:wrap;}
   .tool-btn{padding:8px 18px;border-radius:6px;border:1px solid var(--border);background:var(--card);color:var(--muted);font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:6px;text-decoration:none;}
