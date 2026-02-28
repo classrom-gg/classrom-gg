@@ -31,7 +31,7 @@
       "name": "Bloons Tower Defense 4",
       "slug": "bloons-td-4",
       "type": "swf",
-      "url": "data/games/bloons-td-4/bloons-td-4.swf",
+      "url": "data/games/bloons-td-4/bloonstd4.swf",
       "thumb": "data/thumbs/bloons-td-4.png",
       "description": "Pop all the bloons before they reach the end. Strategic tower defense gameplay.",
       "category": "Tower Defense"
