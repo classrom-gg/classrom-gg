@@ -40,7 +40,7 @@
       "name": "1v1.LOL",
       "slug": "1v1-lol",
       "type": "html",
-      "url": "data/games/1v1-lol/index.html",
+      "url": "https://1v1-lolunblocked.gitlab.io/file/",
       "thumb": "data/thumbs/1v1-lol.png",
       "description": "Build and battle in this fast-paced 1v1 shooter. Practice your building skills!",
       "category": "Shooter"
@@ -49,17 +49,8 @@
       "name": "Snake",
       "slug": "snake",
       "type": "html",
-      "url": "data/games/snake/index.html",
+      "url": "fbx?fbx=snake_arcade&fbxga=1&hl=en&origin=www.google.com",
       "thumb": "data/thumbs/snake.png",
-      "description": "Classic snake game. Eat food, grow longer, don't hit the walls!",
-      "category": "Classic"
-    },
-        {
-      "name": "Super Mario Flash",
-      "slug": "super-mario-flash",
-      "type": "flash",
-      "url": "data/games/super-mario-flash/index.html",
-      "thumb": "data/thumbs/super-mario-flash.png",
       "description": "Classic snake game. Eat food, grow longer, don't hit the walls!",
       "category": "Classic"
     }
