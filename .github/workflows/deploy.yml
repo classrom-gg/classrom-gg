@@ -54,11 +54,17 @@ jobs:
 
       - name: Copy static files into _site/
         run: |
-          cp games.json   _site/
+          cp games.json _site/
 
-          [ -d data ]        && cp -r data        _site/
-          [ -f favicon.ico ] && cp favicon.ico    _site/
-          [ -f favicon.png ] && cp favicon.png    _site/
+          # Copy tất cả file ở root vào _site/ (kể cả google verification html)
+          for f in *.html *.txt *.xml; do
+            [ -f "$f" ] && cp "$f" _site/ && echo "copied: $f"
+          done
+
+          [ -d assets ]      && cp -r assets      _site/
+          [ -d data ]        && cp -r data         _site/
+          [ -f favicon.ico ] && cp favicon.ico     _site/
+          [ -f favicon.png ] && cp favicon.png     _site/
 
           echo "✅ _site contents:"
           find _site -maxdepth 3 | sort
