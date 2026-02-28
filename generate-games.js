@@ -65,7 +65,7 @@ function makePage(game, allGames) {
 
   // ── Embed ──
   const embed = isFlash
-    ? `<div id="ruffle-container" style="position:absolute;inset:0;width:100%;height:100%"></div>`
+    ? `<div id="ruffle-container" style="position:absolute;inset:0;width:100%;height:100%;background:var(--bg);overflow:hidden"></div>`
     : `<iframe src="${escHtml(gameUrl)}" allowfullscreen
     allow="fullscreen; autoplay; gamepad"
     sandbox="allow-scripts allow-same-origin allow-forms allow-pointer-lock allow-popups"
@@ -76,9 +76,17 @@ function makePage(game, allGames) {
   try {
     const ruffle = window.RufflePlayer.newest();
     const player = ruffle.createPlayer();
-    player.style.cssText = 'position:absolute;inset:0;width:100%;height:100%';
+    player.style.cssText = `position:absolute;inset:0;width:100%;height:100%;background:${getComputedStyle(document.documentElement).getPropertyValue('--bg').trim()||'#0a0a0f'}`;
     document.getElementById('ruffle-container').appendChild(player);
-    player.load('${gameUrl}');
+    player.load({
+      url: '${gameUrl}',
+      parameters: '',
+      backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--bg').trim() || '#0a0a0f',
+      scale: 'showAll',
+      quality: 'high',
+      wmode: 'transparent',
+      allowScriptAccess: 'sameDomain',
+    });
   } catch(e) { console.warn('Ruffle not loaded', e); }` : '';
 
   // ── Related games ──
@@ -199,9 +207,9 @@ function makePage(game, allGames) {
   .game-layout{max-width:1300px;margin:0 auto;padding:32px 32px 60px;display:grid;grid-template-columns:1fr 320px;gap:28px;align-items:start;}
   .game-title{font-family:'Press Start 2P',monospace;font-size:clamp(12px,1.8vw,18px);color:var(--text);margin-bottom:16px;line-height:1.5;}
   .game-title em{font-style:normal;color:var(--accent);}
-  .game-frame-wrap{position:relative;background:#000;border:1px solid var(--border);border-radius:10px;overflow:hidden;box-shadow:0 4px 32px rgba(0,0,0,.4);isolation:isolate;z-index:2;}
-  .game-frame-inner{position:relative;padding-bottom:62.5%;height:0;overflow:hidden;background:#000;}
-  .game-frame-inner iframe,.game-frame-inner canvas,.game-frame-inner ruffle-player,.game-frame-inner .ruffle-container,.game-frame-inner .ruffle-container *{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;border:none!important;margin:0!important;padding:0!important;display:block!important;opacity:1!important;filter:none!important;mix-blend-mode:normal!important;-webkit-filter:none!important;}
+  .game-frame-wrap{position:relative;background:var(--bg);border:1px solid var(--border);border-radius:10px;overflow:hidden;box-shadow:0 4px 32px rgba(0,0,0,.4);isolation:isolate;z-index:2;}
+  .game-frame-inner{position:relative;padding-bottom:62.5%;height:0;overflow:hidden;background:var(--bg);}
+  .game-frame-inner iframe,.game-frame-inner canvas,.game-frame-inner ruffle-player,.game-frame-inner .ruffle-container,.game-frame-inner .ruffle-container *{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;border:none!important;margin:0!important;padding:0!important;display:block!important;opacity:1!important;filter:none!important;mix-blend-mode:normal!important;-webkit-filter:none!important;background:var(--bg)!important;}
   .game-toolbar{display:flex;gap:10px;align-items:center;padding:12px 0 0;flex-wrap:wrap;}
   .tool-btn{padding:8px 18px;border-radius:6px;border:1px solid var(--border);background:var(--card);color:var(--muted);font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:6px;text-decoration:none;}
   .tool-btn:hover{border-color:var(--accent);color:var(--accent);}
