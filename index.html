@@ -390,7 +390,7 @@ function setCategory(cat) {
 
 function renderCategories() {
   const cats = ['all', ...new Set(allGames.map(g => g.category).filter(Boolean))].sort((a,b) => a==='all'?-1:a.localeCompare(b));
-  const icons = { Action:'⚔️', Platformer:'🕹️', Puzzle:'🧩', Shooter:'🔫', Sports:'🏆', Racing:'🏎️', Tower Defense:'🗼', Classic:'👾', Physics:'⚙️' };
+  const icons = { Action:'⚔️', Platformer:'🕹️', Puzzle:'🧩', Shooter:'🔫', Sports:'🏆', Racing:'🏎️', 'Tower Defense':'🗼', Classic:'👾', Physics:'⚙️' };
   document.getElementById('cat-row').innerHTML =
     cats.map(c => `<button class="cat-btn${c==='all'?' active':''}" data-cat="${c}" onclick="setCategory('${c}')">${c==='all'?'🗂️ All Categories':(icons[c]||'🎮')+' '+c}</button>`).join('');
 }
