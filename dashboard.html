@@ -1,0 +1,1400 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Classrom.GG Admin Dashboard</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root[data-theme="dark"] {
+  --bg: #090b12;
+  --bg2: #101625;
+  --card: #141b2d;
+  --card2: #101728;
+  --border: #27324d;
+  --accent: #56f7b2;
+  --accent2: #ff6a88;
+  --accent3: #5ea6ff;
+  --text: #eef3ff;
+  --muted: #94a0c0;
+  --success: #56f7b2;
+  --error: #fb7185;
+  --shadow: 0 24px 60px rgba(3, 8, 20, 0.34);
+}
+
+:root[data-theme="light"] {
+  --bg: #edf2fb;
+  --bg2: #ffffff;
+  --card: #ffffff;
+  --card2: #f7f9fe;
+  --border: #d5ddee;
+  --accent: #0f9f6e;
+  --accent2: #e11d48;
+  --accent3: #2563eb;
+  --text: #162033;
+  --muted: #617089;
+  --success: #0f9f6e;
+  --error: #e11d48;
+  --shadow: 0 24px 60px rgba(15, 23, 42, 0.08);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--text);
+  font-family: 'Rajdhani', sans-serif;
+  background:
+    radial-gradient(circle at top right, rgba(94, 166, 255, 0.12), transparent 30%),
+    radial-gradient(circle at top left, rgba(86, 247, 178, 0.12), transparent 24%),
+    linear-gradient(180deg, var(--bg2) 0%, var(--bg) 100%);
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  background-size: 32px 32px;
+  pointer-events: none;
+  opacity: 0.45;
+}
+
+a,
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 28px;
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(18px);
+  background: rgba(9, 11, 18, 0.78);
+}
+
+[data-theme="light"] header {
+  background: rgba(237, 242, 251, 0.86);
+}
+
+.logo {
+  color: var(--accent);
+  text-decoration: none;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 13px;
+  letter-spacing: 1px;
+}
+
+.logo span {
+  color: var(--accent2);
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.hero,
+.layout {
+  max-width: 1440px;
+  margin: 0 auto;
+}
+
+.hero {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 38px 28px 22px;
+}
+
+.eyebrow {
+  margin: 0 0 10px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.hero h1 {
+  margin: 0;
+  font-family: 'Press Start 2P', monospace;
+  font-size: clamp(18px, 3vw, 30px);
+  line-height: 1.7;
+}
+
+.hero p {
+  max-width: 700px;
+  margin: 14px 0 0;
+  color: var(--muted);
+  font-size: 18px;
+  line-height: 1.7;
+  font-weight: 600;
+}
+
+.hero-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(340px, 0.95fr);
+  gap: 22px;
+  padding: 0 28px 36px;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.stat-card,
+.panel {
+  border: 1px solid var(--border);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent 42%), var(--card);
+  box-shadow: var(--shadow);
+}
+
+.stat-card {
+  border-radius: 20px;
+  padding: 18px;
+  overflow: hidden;
+  position: relative;
+}
+
+.stat-card::after,
+.panel::after {
+  content: '';
+  position: absolute;
+  top: -48px;
+  right: -48px;
+  width: 120px;
+  height: 120px;
+  border-radius: 999px;
+  background: radial-gradient(circle, rgba(94, 166, 255, 0.14) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.stat-card small {
+  display: block;
+  margin-bottom: 12px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+}
+
+.stat-card strong {
+  display: block;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.panel {
+  position: relative;
+  overflow: hidden;
+  border-radius: 24px;
+  padding: 22px;
+}
+
+.panel-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.panel-head h2 {
+  margin: 0;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 12px;
+  line-height: 1.9;
+}
+
+.kicker {
+  margin: 0 0 8px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+}
+
+.subtle,
+.helper,
+.footer-note {
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.subtle {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.helper,
+.footer-note {
+  margin: 14px 0 0;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 46px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: var(--card2);
+  color: var(--text);
+  text-decoration: none;
+  padding: 11px 14px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease, box-shadow 0.18s ease;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+  border-color: var(--accent3);
+  box-shadow: 0 10px 26px rgba(37, 99, 235, 0.18);
+}
+
+.btn.primary {
+  color: #ffffff;
+  border-color: transparent;
+  background: linear-gradient(135deg, var(--accent3), #7c5cff);
+}
+
+.btn.secondary {
+  color: #05131d;
+  border-color: transparent;
+  background: linear-gradient(135deg, var(--accent), #86efac);
+}
+
+.btn.ghost {
+  background: transparent;
+}
+
+.btn[disabled] {
+  cursor: wait;
+  opacity: 0.72;
+  transform: none;
+  box-shadow: none;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.field.full {
+  grid-column: 1 / -1;
+}
+
+.field label {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.input,
+select,
+textarea {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  outline: none;
+  background: rgba(255, 255, 255, 0.02);
+  color: var(--text);
+  padding: 13px 14px;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+}
+
+[data-theme="light"] .input,
+[data-theme="light"] select,
+[data-theme="light"] textarea {
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.input:focus,
+select:focus,
+textarea:focus {
+  border-color: var(--accent3);
+  box-shadow: 0 0 0 4px rgba(94, 166, 255, 0.12);
+}
+
+textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+textarea.small {
+  min-height: 96px;
+}
+
+.route {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--muted);
+  background: rgba(255, 255, 255, 0.02);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.status {
+  display: none;
+  margin-top: 14px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  border: 1px solid transparent;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.6;
+}
+
+.status.visible {
+  display: block;
+}
+
+.status.info {
+  background: rgba(94, 166, 255, 0.1);
+  border-color: rgba(94, 166, 255, 0.22);
+  color: #b9d3ff;
+}
+
+.status.success {
+  background: rgba(86, 247, 178, 0.1);
+  border-color: rgba(86, 247, 178, 0.22);
+  color: #9df7cd;
+}
+
+.status.error {
+  background: rgba(251, 113, 133, 0.1);
+  border-color: rgba(251, 113, 133, 0.22);
+  color: #fec5d0;
+}
+
+[data-theme="light"] .status.info {
+  color: #1d4ed8;
+}
+
+[data-theme="light"] .status.success {
+  color: #047857;
+}
+
+[data-theme="light"] .status.error {
+  color: #be123c;
+}
+
+.list-search {
+  margin-bottom: 14px;
+}
+
+.game-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 820px;
+  overflow: auto;
+  padding-right: 4px;
+}
+
+.game-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--card2);
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+  transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.game-item:hover,
+.game-item.active {
+  transform: translateY(-1px);
+  border-color: var(--accent3);
+  box-shadow: 0 12px 28px rgba(37, 99, 235, 0.14);
+}
+
+.game-item-title {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.meta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 10px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.chip.html {
+  color: #7dd3fc;
+  border-color: rgba(125, 211, 252, 0.26);
+}
+
+.chip.swf {
+  color: #fda4af;
+  border-color: rgba(253, 164, 175, 0.26);
+}
+
+.json-preview {
+  margin: 0;
+  max-height: 460px;
+  overflow: auto;
+  border: 1px solid rgba(94, 166, 255, 0.2);
+  border-radius: 18px;
+  background: #08101d;
+  color: #d7e2ff;
+  padding: 16px;
+  font-family: Consolas, 'Courier New', monospace;
+  font-size: 13px;
+  line-height: 1.55;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+[data-theme="light"] .json-preview {
+  background: #f7f9fc;
+  color: #1f2b46;
+}
+
+.content-panel {
+  position: relative;
+}
+
+.loading-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(6, 12, 24, 0.74);
+  backdrop-filter: blur(10px);
+}
+
+.loading-overlay.active {
+  display: flex;
+}
+
+.loading-box {
+  width: min(320px, 100%);
+  padding: 24px;
+  border: 1px solid rgba(94, 166, 255, 0.2);
+  border-radius: 22px;
+  background: rgba(9, 14, 24, 0.96);
+  text-align: center;
+}
+
+.loading-box strong {
+  display: block;
+  margin-bottom: 10px;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 12px;
+  line-height: 1.8;
+}
+
+.loading-box p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  margin: 0 auto 14px;
+  border: 4px solid rgba(255, 255, 255, 0.16);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+}
+
+.empty-state {
+  padding: 28px 0;
+  text-align: center;
+  color: var(--muted);
+  font-size: 16px;
+  font-weight: 700;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 1180px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+
+  .stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  header,
+  .hero,
+  .layout {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .hero {
+    padding-top: 30px;
+  }
+
+  .stats,
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .panel,
+  .stat-card {
+    padding: 18px;
+  }
+
+  .hero p {
+    font-size: 16px;
+  }
+
+  .header-right {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+}
+</style>
+</head>
+<body>
+<header>
+  <a class="logo" href="index.html">CLASSROM<span>.GG</span></a>
+  <div class="header-right">
+    <a class="btn ghost" href="index.html">Back to site</a>
+    <button class="btn ghost" type="button" id="themeToggle">Theme: <span id="themeLabel">Dark</span></button>
+  </div>
+</header>
+
+<section class="hero">
+  <div>
+    <p class="eyebrow">Admin Utility</p>
+    <h1>Game Dashboard</h1>
+    <p>Load games.json, add or update entries, and generate the content fields with Claude through a local proxy while showing a spinner in the content panel.</p>
+  </div>
+  <div class="hero-actions">
+    <span class="route" id="routeValue">/g/new-game/</span>
+  </div>
+</section>
+
+<main class="layout">
+  <section class="column">
+    <div class="stats">
+      <article class="stat-card">
+        <small>Total games</small>
+        <strong id="totalGames">0</strong>
+      </article>
+      <article class="stat-card">
+        <small>Categories</small>
+        <strong id="totalCategories">0</strong>
+      </article>
+      <article class="stat-card">
+        <small>Data source</small>
+        <strong id="sourceValue">Published games.json</strong>
+      </article>
+      <article class="stat-card">
+        <small>Current slug</small>
+        <strong id="currentSlugValue">new-game</strong>
+      </article>
+    </div>
+
+    <section class="panel">
+      <div class="panel-head">
+        <div>
+          <p class="kicker">Data</p>
+          <h2>games.json workspace flow</h2>
+        </div>
+        <div class="toolbar">
+          <button class="btn" type="button" id="loadPublishedBtn">Load published</button>
+          <button class="btn" type="button" id="openLocalBtn">Open local file</button>
+          <button class="btn secondary" type="button" id="saveLocalBtn">Save file</button>
+          <button class="btn" type="button" id="downloadBtn">Download JSON</button>
+        </div>
+      </div>
+      <p class="helper">This repo deploys as a static site, so the dashboard cannot commit changes back to GitHub by itself. Use Open local file or Download JSON, then run your normal deploy flow after updating games.json.</p>
+      <p class="footer-note">To rebuild local pages after saving the file, run node generate-games.js from the repo root.</p>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <div>
+          <p class="kicker">Game entry</p>
+          <h2>Basic fields</h2>
+        </div>
+      </div>
+      <form id="gameForm" novalidate>
+        <div class="form-grid">
+          <div class="field">
+            <label for="gameName">Game name</label>
+            <input class="input" id="gameName" name="gameName" type="text" placeholder="Example: Subway Surfers">
+          </div>
+          <div class="field">
+            <label for="gameSlug">Slug</label>
+            <input class="input" id="gameSlug" name="gameSlug" type="text" placeholder="subway-surfers">
+          </div>
+          <div class="field">
+            <label for="gameCategory">Category</label>
+            <input class="input" id="gameCategory" name="gameCategory" type="text" placeholder="Action">
+          </div>
+          <div class="field">
+            <label for="gameType">Type</label>
+            <select id="gameType" name="gameType">
+              <option value="html">HTML5</option>
+              <option value="swf">Flash / SWF</option>
+            </select>
+          </div>
+          <div class="field full">
+            <label for="gameUrl">Game URL</label>
+            <input class="input" id="gameUrl" name="gameUrl" type="text" placeholder="data/games/subway-surfers/index.html or external URL">
+          </div>
+          <div class="field full">
+            <label for="gameThumb">Thumbnail path</label>
+            <input class="input" id="gameThumb" name="gameThumb" type="text" placeholder="data/thumbs/subway-surfers.png">
+          </div>
+        </div>
+      </form>
+    </section>
+
+    <section class="panel content-panel">
+      <div class="loading-overlay" id="contentLoading">
+        <div class="loading-box">
+          <div class="spinner"></div>
+          <strong>Generating content</strong>
+          <p>Claude is filling the content fields. The form stays disabled here until the response is ready.</p>
+        </div>
+      </div>
+      <div class="panel-head">
+        <div>
+          <p class="kicker">Content</p>
+          <h2>Claude content generator</h2>
+          <p class="subtle">The dashboard calls a local proxy so your Claude API key stays off the public page.</p>
+        </div>
+        <button class="btn primary" type="button" id="generateContentBtn">Generate content</button>
+      </div>
+      <div class="form-grid">
+        <div class="field full">
+          <label for="claudeProxyUrl">Proxy URL</label>
+          <input class="input" id="claudeProxyUrl" data-default="http://localhost:8787/api/claude-content" type="text" value="http://localhost:8787/api/claude-content">
+        </div>
+        <div class="field full">
+          <label for="claudeModel">Claude model</label>
+          <input class="input" id="claudeModel" data-default="claude-haiku-4-5" type="text" value="claude-haiku-4-5" placeholder="Leave as default or override the model name">
+        </div>
+        <div class="field full">
+          <label for="aiNotes">AI context</label>
+          <textarea class="small" id="aiNotes" placeholder="Paste reliable notes for Claude here: gameplay loop, controls, developer, special mechanics, where the game comes from, or any facts you want the generated content to use."></textarea>
+        </div>
+        <div class="field full">
+          <label for="gameDescription">Description</label>
+          <textarea id="gameDescription" placeholder="SEO-friendly game description"></textarea>
+        </div>
+        <div class="field full">
+          <label for="gameControls">Controls</label>
+          <textarea class="small" id="gameControls" placeholder="One control per line"></textarea>
+        </div>
+        <div class="field full">
+          <label for="gameInstructions">Instructions</label>
+          <textarea class="small" id="gameInstructions" placeholder="Short gameplay advice or how-to-play guidance"></textarea>
+        </div>
+        <div class="field full">
+          <label for="gameTips">Tips</label>
+          <textarea class="small" id="gameTips" placeholder="One tip per line"></textarea>
+        </div>
+        <div class="field">
+          <label for="gameDeveloper">Developer</label>
+          <input class="input" id="gameDeveloper" type="text" placeholder="Studio or publisher name">
+        </div>
+        <div class="field">
+          <label for="gameCreator">Creator blurb</label>
+          <input class="input" id="gameCreator" type="text" placeholder="Short creator sentence or description">
+        </div>
+      </div>
+      <p class="footer-note">Nếu chạy node claude-proxy.js thì dashboard local sẽ ở http://localhost:8787/dashboard.html và proxy mặc định sẽ là cùng cổng đó.</p>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <div>
+          <p class="kicker">Commit to memory</p>
+          <h2>Add or update current entry</h2>
+        </div>
+        <div class="toolbar">
+          <button class="btn secondary" type="button" id="addGameBtn">Add or update game</button>
+          <button class="btn ghost" type="button" id="resetFormBtn">Reset form</button>
+        </div>
+      </div>
+      <p class="helper">If the slug already exists, the dashboard updates that item in place. If not, the game is appended to the current list in memory.</p>
+      <div class="status" id="statusMessage"></div>
+    </section>
+  </section>
+
+  <aside class="column">
+    <section class="panel">
+      <div class="panel-head">
+        <div>
+          <p class="kicker">Preview</p>
+          <h2>Current JSON payload</h2>
+        </div>
+        <span class="route" id="previewRoute">/g/new-game/</span>
+      </div>
+      <pre class="json-preview" id="jsonPreview">{
+}
+</pre>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <div>
+          <p class="kicker">Library</p>
+          <h2>Existing games</h2>
+          <p class="subtle">Click a row to load it back into the form.</p>
+        </div>
+      </div>
+      <div class="list-search">
+        <input class="input" id="librarySearch" type="text" placeholder="Search by name, slug, or category">
+      </div>
+      <div class="game-list" id="gameList">
+        <div class="empty-state">Loading games.json...</div>
+      </div>
+    </section>
+  </aside>
+</main>
+
+<input id="fileInput" type="file" accept=".json,application/json" hidden>
+
+<script>
+const state = {
+  games: [],
+  fileHandle: null,
+  sourceLabel: 'Published games.json',
+  localFileName: '',
+  activeSlug: '',
+  draftKey: 'cgDashboardDraftV1',
+  autoSlug: true,
+};
+
+const LEGACY_CLAUDE_MODEL_DEFAULTS = new Set(['claude-3-5-sonnet-latest']);
+
+const els = {
+  themeToggle: document.getElementById('themeToggle'),
+  themeLabel: document.getElementById('themeLabel'),
+  totalGames: document.getElementById('totalGames'),
+  totalCategories: document.getElementById('totalCategories'),
+  sourceValue: document.getElementById('sourceValue'),
+  currentSlugValue: document.getElementById('currentSlugValue'),
+  routeValue: document.getElementById('routeValue'),
+  previewRoute: document.getElementById('previewRoute'),
+  loadPublishedBtn: document.getElementById('loadPublishedBtn'),
+  openLocalBtn: document.getElementById('openLocalBtn'),
+  saveLocalBtn: document.getElementById('saveLocalBtn'),
+  downloadBtn: document.getElementById('downloadBtn'),
+  form: document.getElementById('gameForm'),
+  name: document.getElementById('gameName'),
+  slug: document.getElementById('gameSlug'),
+  category: document.getElementById('gameCategory'),
+  type: document.getElementById('gameType'),
+  url: document.getElementById('gameUrl'),
+  thumb: document.getElementById('gameThumb'),
+  claudeProxyUrl: document.getElementById('claudeProxyUrl'),
+  claudeModel: document.getElementById('claudeModel'),
+  aiNotes: document.getElementById('aiNotes'),
+  description: document.getElementById('gameDescription'),
+  controls: document.getElementById('gameControls'),
+  instructions: document.getElementById('gameInstructions'),
+  tips: document.getElementById('gameTips'),
+  developer: document.getElementById('gameDeveloper'),
+  creator: document.getElementById('gameCreator'),
+  contentLoading: document.getElementById('contentLoading'),
+  generateContent: document.getElementById('generateContentBtn'),
+  addGameBtn: document.getElementById('addGameBtn'),
+  resetFormBtn: document.getElementById('resetFormBtn'),
+  status: document.getElementById('statusMessage'),
+  jsonPreview: document.getElementById('jsonPreview'),
+  librarySearch: document.getElementById('librarySearch'),
+  gameList: document.getElementById('gameList'),
+  fileInput: document.getElementById('fileInput'),
+};
+
+function getStoredTheme() {
+  return localStorage.getItem('cgTheme') || 'dark';
+}
+
+function getDefaultProxyUrl() {
+  const { hostname, port } = window.location;
+  if (hostname === 'localhost' && port === '8787') return '/api/claude-content';
+  return 'http://localhost:8787/api/claude-content';
+}
+
+function applyTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  els.themeLabel.textContent = theme === 'dark' ? 'Dark' : 'Light';
+  localStorage.setItem('cgTheme', theme);
+}
+
+function toggleTheme() {
+  const nextTheme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  applyTheme(nextTheme);
+}
+
+function escapeHtml(value) {
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+function slugify(value) {
+  return String(value || '')
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
+function normalizeString(value) {
+  const trimmed = String(value ?? '').trim();
+  return trimmed || undefined;
+}
+
+function parseTips(value) {
+  return String(value || '')
+    .split(/\r?\n/)
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
+function gameSlug(game) {
+  return game.slug || slugify(game.name);
+}
+
+function setStatus(message, tone = 'info') {
+  els.status.textContent = message;
+  els.status.className = 'status visible ' + tone;
+}
+
+function clearStatus() {
+  els.status.textContent = '';
+  els.status.className = 'status';
+}
+
+function normalizeGame(game) {
+  const normalized = {
+    name: normalizeString(game.name),
+    slug: normalizeString(game.slug),
+    type: normalizeString(game.type),
+    url: normalizeString(game.url),
+    thumb: normalizeString(game.thumb),
+    description: normalizeString(game.description),
+    controls: normalizeString(game.controls),
+    instructions: normalizeString(game.instructions),
+    creator: normalizeString(game.creator),
+    developer: normalizeString(game.developer),
+    category: normalizeString(game.category),
+  };
+  const tips = Array.isArray(game.tips) ? game.tips.map((item) => String(item).trim()).filter(Boolean) : [];
+  if (tips.length) normalized.tips = tips;
+  return Object.fromEntries(Object.entries(normalized).filter(([, value]) => value !== undefined));
+}
+
+function readForm() {
+  return {
+    name: els.name.value.trim(),
+    slug: els.slug.value.trim(),
+    type: els.type.value,
+    url: els.url.value.trim(),
+    thumb: els.thumb.value.trim(),
+    category: els.category.value.trim(),
+    description: els.description.value.trim(),
+    controls: els.controls.value.trim(),
+    instructions: els.instructions.value.trim(),
+    creator: els.creator.value.trim(),
+    developer: els.developer.value.trim(),
+    tips: parseTips(els.tips.value),
+  };
+}
+
+function serializeGames() {
+  return JSON.stringify({ games: state.games }, null, 2) + '\n';
+}
+
+function currentSourceText() {
+  return state.fileHandle ? 'Local file: ' + (state.localFileName || 'games.json') : state.sourceLabel;
+}
+
+function updateStats() {
+  const categories = new Set(state.games.map((game) => game.category).filter(Boolean));
+  const slug = els.slug.value.trim() || 'new-game';
+  const route = '/g/' + slug + '/';
+  els.totalGames.textContent = String(state.games.length);
+  els.totalCategories.textContent = String(categories.size);
+  els.sourceValue.textContent = currentSourceText();
+  els.currentSlugValue.textContent = slug;
+  els.routeValue.textContent = route;
+  els.previewRoute.textContent = route;
+}
+
+function updatePreview() {
+  const preview = normalizeGame(readForm());
+  els.jsonPreview.textContent = Object.keys(preview).length ? JSON.stringify(preview, null, 2) : '{\n}';
+  updateStats();
+}
+
+function persistDraft() {
+  const draft = {
+    ...readForm(),
+    aiNotes: els.aiNotes.value,
+    claudeProxyUrl: els.claudeProxyUrl.value,
+    claudeModel: els.claudeModel.value,
+    autoSlug: state.autoSlug,
+  };
+  localStorage.setItem(state.draftKey, JSON.stringify(draft));
+  updatePreview();
+}
+
+function fillForm(game, options = {}) {
+  els.name.value = game.name || '';
+  els.slug.value = game.slug || '';
+  els.type.value = game.type || 'html';
+  els.url.value = game.url || '';
+  els.thumb.value = game.thumb || '';
+  els.category.value = game.category || '';
+  els.description.value = game.description || '';
+  els.controls.value = game.controls || '';
+  els.instructions.value = game.instructions || '';
+  els.creator.value = game.creator || '';
+  els.developer.value = game.developer || '';
+  els.tips.value = Array.isArray(game.tips) ? game.tips.join('\n') : '';
+  if (!options.preserveAutoSlug) state.autoSlug = false;
+  updatePreview();
+  persistDraft();
+}
+
+function restoreDraft() {
+  try {
+    const raw = localStorage.getItem(state.draftKey);
+    if (!raw) return;
+    const draft = JSON.parse(raw);
+    fillForm(draft, { preserveAutoSlug: true });
+    els.aiNotes.value = draft.aiNotes || '';
+    if (draft.claudeProxyUrl) els.claudeProxyUrl.value = draft.claudeProxyUrl;
+    if (draft.claudeModel) {
+      els.claudeModel.value = LEGACY_CLAUDE_MODEL_DEFAULTS.has(draft.claudeModel)
+        ? els.claudeModel.dataset.default
+        : draft.claudeModel;
+    }
+    if (typeof draft.autoSlug === 'boolean') state.autoSlug = draft.autoSlug;
+    updatePreview();
+  } catch (error) {
+    console.warn('Could not restore dashboard draft.', error);
+  }
+}
+
+function resetForm() {
+  els.form.reset();
+  els.type.value = 'html';
+  els.slug.value = '';
+  els.aiNotes.value = '';
+  els.claudeProxyUrl.value = els.claudeProxyUrl.dataset.default;
+  els.claudeModel.value = els.claudeModel.dataset.default;
+  state.activeSlug = '';
+  state.autoSlug = true;
+  clearStatus();
+  renderLibrary();
+  persistDraft();
+  updatePreview();
+}
+
+function validateGame(game) {
+  const errors = [];
+  if (!game.name) errors.push('Game name is required.');
+  if (!game.slug) errors.push('Slug is required.');
+  if (game.slug && !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(game.slug)) errors.push('Slug only accepts lowercase letters, numbers, and hyphens.');
+  if (!game.type) errors.push('Type is required.');
+  return errors;
+}
+
+function renderLibrary() {
+  const query = els.librarySearch.value.trim().toLowerCase();
+  const filtered = state.games.filter((game) => {
+    const haystack = [game.name, gameSlug(game), game.category].filter(Boolean).join(' ').toLowerCase();
+    return !query || haystack.includes(query);
+  });
+
+  if (!filtered.length) {
+    els.gameList.innerHTML = '<div class="empty-state">No games match the current filter.</div>';
+    return;
+  }
+
+  els.gameList.innerHTML = filtered.slice(0, 300).map((game) => {
+    const slug = gameSlug(game);
+    const typeClass = game.type === 'swf' ? 'swf' : 'html';
+    const typeLabel = game.type === 'swf' ? 'Flash' : 'HTML5';
+    const activeClass = slug === state.activeSlug ? ' active' : '';
+    return '<button class="game-item' + activeClass + '" type="button" data-slug="' + escapeHtml(slug) + '">' +
+      '<div>' +
+        '<div class="game-item-title">' + escapeHtml(game.name || slug) + '</div>' +
+        '<div class="meta-row">' +
+          '<span class="chip ' + typeClass + '">' + typeLabel + '</span>' +
+          (game.category ? '<span class="chip">' + escapeHtml(game.category) + '</span>' : '') +
+        '</div>' +
+      '</div>' +
+      '<span class="chip">' + escapeHtml(slug) + '</span>' +
+    '</button>';
+  }).join('');
+}
+
+function selectGame(slug) {
+  const game = state.games.find((item) => gameSlug(item) === slug);
+  if (!game) return;
+  state.activeSlug = slug;
+  fillForm(game);
+  renderLibrary();
+  setStatus('Loaded existing game into the form. Saving will update this entry.', 'info');
+}
+
+async function loadPublishedData() {
+  try {
+    const response = await fetch('games.json', { cache: 'no-store' });
+    if (!response.ok) throw new Error('HTTP ' + response.status);
+    const data = await response.json();
+    state.games = Array.isArray(data.games) ? data.games : [];
+    state.fileHandle = null;
+    state.localFileName = '';
+    state.sourceLabel = 'Published games.json';
+    renderLibrary();
+    updateStats();
+    setStatus('Loaded published games.json into the dashboard.', 'success');
+  } catch (error) {
+    setStatus('Could not load published games.json: ' + error.message, 'error');
+  }
+}
+
+async function loadLocalFile(file, fileHandle) {
+  try {
+    const text = await file.text();
+    const data = JSON.parse(text);
+    if (!data || !Array.isArray(data.games)) throw new Error('The selected file must contain { "games": [] }.');
+    state.games = data.games;
+    state.fileHandle = fileHandle || null;
+    state.localFileName = file.name || 'games.json';
+    state.sourceLabel = 'Local games.json';
+    renderLibrary();
+    updateStats();
+    setStatus('Loaded local games.json. Save will write back to this file when supported.', 'success');
+  } catch (error) {
+    setStatus('Could not open local file: ' + error.message, 'error');
+  }
+}
+
+async function openLocalFile() {
+  if (window.showOpenFilePicker) {
+    try {
+      const handles = await window.showOpenFilePicker({
+        multiple: false,
+        types: [{ description: 'JSON files', accept: { 'application/json': ['.json'] } }],
+      });
+      const fileHandle = handles && handles[0];
+      if (!fileHandle) return;
+      const file = await fileHandle.getFile();
+      await loadLocalFile(file, fileHandle);
+      return;
+    } catch (error) {
+      if (error && error.name === 'AbortError') return;
+      setStatus('Open file failed: ' + error.message, 'error');
+      return;
+    }
+  }
+  els.fileInput.click();
+}
+
+function downloadJson() {
+  const blob = new Blob([serializeGames()], { type: 'application/json' });
+  const objectUrl = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = objectUrl;
+  link.download = 'games.json';
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(objectUrl);
+}
+
+async function saveLocalFile() {
+  const payload = serializeGames();
+  try {
+    if (!state.fileHandle && window.showSaveFilePicker) {
+      state.fileHandle = await window.showSaveFilePicker({
+        suggestedName: state.localFileName || 'games.json',
+        types: [{ description: 'JSON files', accept: { 'application/json': ['.json'] } }],
+      });
+    }
+    if (state.fileHandle) {
+      const writable = await state.fileHandle.createWritable();
+      await writable.write(payload);
+      await writable.close();
+      state.localFileName = state.localFileName || 'games.json';
+      updateStats();
+      setStatus('Saved games.json to your local file.', 'success');
+      return;
+    }
+    downloadJson();
+    setStatus('Browser save access is unavailable, so the file was downloaded instead.', 'info');
+  } catch (error) {
+    if (error && error.name === 'AbortError') return;
+    setStatus('Save failed: ' + error.message, 'error');
+  }
+}
+
+function addOrUpdateGame() {
+  const game = normalizeGame(readForm());
+  const errors = validateGame(game);
+  if (errors.length) {
+    setStatus(errors.join(' '), 'error');
+    return;
+  }
+
+  const existingIndex = state.games.findIndex((item) => gameSlug(item) === game.slug);
+  if (existingIndex >= 0) {
+    state.games[existingIndex] = { ...state.games[existingIndex], ...game };
+    setStatus('Updated game "' + game.name + '" in the current list.', 'success');
+  } else {
+    state.games.push(game);
+    setStatus('Added game "' + game.name + '" to the current list.', 'success');
+  }
+
+  state.activeSlug = game.slug;
+  renderLibrary();
+  persistDraft();
+  updatePreview();
+}
+
+function setContentLoading(loading) {
+  els.contentLoading.classList.toggle('active', loading);
+  els.generateContent.disabled = loading;
+  els.generateContent.textContent = loading ? 'Generating...' : 'Generate content';
+}
+
+async function generateContent() {
+  const baseGame = normalizeGame(readForm());
+  if (!baseGame.name) {
+    setStatus('Enter the game name before generating content.', 'error');
+    return;
+  }
+
+  const proxyUrl = els.claudeProxyUrl.value.trim();
+  if (!proxyUrl) {
+    setStatus('Enter the Claude proxy URL before generating content.', 'error');
+    return;
+  }
+
+  const payload = {
+    game: baseGame,
+    notes: els.aiNotes.value.trim(),
+    model: els.claudeModel.value.trim(),
+    existing: {
+      description: els.description.value.trim(),
+      controls: els.controls.value.trim(),
+      instructions: els.instructions.value.trim(),
+      creator: els.creator.value.trim(),
+      developer: els.developer.value.trim(),
+      tips: parseTips(els.tips.value),
+    },
+  };
+
+  setContentLoading(true);
+  clearStatus();
+
+  try {
+    const response = await fetch(proxyUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok || !data.ok) {
+      throw new Error(data.error || ('Proxy returned HTTP ' + response.status));
+    }
+
+    const content = data.content || {};
+    if (content.description) els.description.value = content.description;
+    if (content.controls) els.controls.value = content.controls;
+    if (content.instructions) els.instructions.value = content.instructions;
+    if (content.creator) els.creator.value = content.creator;
+    if (content.developer) els.developer.value = content.developer;
+    if (Array.isArray(content.tips)) els.tips.value = content.tips.join('\n');
+
+    persistDraft();
+    updatePreview();
+    setStatus('Content was generated with Claude and copied into the form.', 'success');
+  } catch (error) {
+    setStatus('Claude generation failed: ' + error.message, 'error');
+  } finally {
+    setContentLoading(false);
+  }
+}
+
+function handleNameInput() {
+  if (state.autoSlug || !els.slug.value.trim()) {
+    els.slug.value = slugify(els.name.value);
+  }
+  updatePreview();
+  persistDraft();
+}
+
+function attachInputSync() {
+  els.name.addEventListener('input', handleNameInput);
+  els.slug.addEventListener('input', () => {
+    state.autoSlug = false;
+    updatePreview();
+    persistDraft();
+  });
+
+  [
+    els.category,
+    els.type,
+    els.url,
+    els.thumb,
+    els.aiNotes,
+    els.description,
+    els.controls,
+    els.instructions,
+    els.tips,
+    els.developer,
+    els.creator,
+    els.claudeProxyUrl,
+    els.claudeModel,
+  ].forEach((element) => {
+    element.addEventListener('input', persistDraft);
+    element.addEventListener('change', persistDraft);
+  });
+
+  els.librarySearch.addEventListener('input', renderLibrary);
+}
+
+const defaultProxyUrl = getDefaultProxyUrl();
+els.claudeProxyUrl.dataset.default = defaultProxyUrl;
+if (!els.claudeProxyUrl.value || els.claudeProxyUrl.value === 'http://localhost:8787/api/claude-content' || els.claudeProxyUrl.value === '/api/claude-content') {
+  els.claudeProxyUrl.value = defaultProxyUrl;
+}
+
+applyTheme(getStoredTheme());
+
+els.themeToggle.addEventListener('click', toggleTheme);
+els.loadPublishedBtn.addEventListener('click', loadPublishedData);
+els.openLocalBtn.addEventListener('click', openLocalFile);
+els.saveLocalBtn.addEventListener('click', saveLocalFile);
+els.downloadBtn.addEventListener('click', downloadJson);
+els.generateContent.addEventListener('click', generateContent);
+els.addGameBtn.addEventListener('click', addOrUpdateGame);
+els.resetFormBtn.addEventListener('click', resetForm);
+els.gameList.addEventListener('click', (event) => {
+  const button = event.target.closest('.game-item');
+  if (!button) return;
+  selectGame(button.dataset.slug);
+});
+els.fileInput.addEventListener('change', async (event) => {
+  const file = event.target.files && event.target.files[0];
+  if (file) await loadLocalFile(file, null);
+  event.target.value = '';
+});
+
+attachInputSync();
+restoreDraft();
+updatePreview();
+loadPublishedData();
+</script>
+</body>
+</html>

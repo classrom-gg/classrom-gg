@@ -34,6 +34,7 @@ jobs:
       - name: Copy static files to _site
         run: |
           cp index.html _site/
+          [ -f dashboard.html ] && cp dashboard.html _site/
           cp games.json _site/
           [ -f game.html ] && cp game.html _site/
           for f in privacy.html terms.html dmca.html contact.html; do
