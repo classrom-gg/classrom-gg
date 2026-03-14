@@ -1,5 +1,17 @@
 {
   "games": [
+        {
+      "name": "2048",
+      "slug": "2048",
+      "type": "html",
+      "url": "https://classroom-gg.classrom.workers.dev/p/2048",
+      "thumb": "data/thumbs/slope.png",
+      "description": "Slope is a fun endless running game created by RobKayS. Guide a rolling ball down a steep, neon-lit slope while avoiding obstacles and staying on the platform. Be careful – if you hit a red block or fall off the edge, it's game over!",
+      "controls": "Arrow Keys or A/D - Steer left and right",
+      "instructions": "Don't be afraid to make small adjustments rather than sharp turns to maintain control.\nUse anticipation skills to look ahead and plan your path before obstacles appear!",
+      "creator": "Slope is created by RobKayS, known for developing addictive skill-based arcade games with minimalist design.",
+      "category": "Action"
+    },
     {
       "name": "Slope",
       "slug": "slope",
